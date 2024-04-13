@@ -1,0 +1,4 @@
+# config/_default/config.toml
+
+baseURL = "https://utkarshdeoli.web.app/"
+languageCode = "en"

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>随笔闲谈 on Utkarsh Deoli</title>
+    <link>http://localhost:1313/tags/%E9%9A%8F%E7%AC%94%E9%97%B2%E8%B0%88/</link>
+    <description>Recent content in 随笔闲谈 on Utkarsh Deoli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2024 Utkarsh Deoli</copyright>
+    <lastBuildDate>Sun, 21 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/%E9%9A%8F%E7%AC%94%E9%97%B2%E8%B0%88/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 Coze 搭建 TiDB 助手</title>
+      <link>http://localhost:1313/articels/2024-01-21/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2024-01-21/</guid>
+      <description>尝试用字节的 Coze 做个 TiDB 文档助手，顺道梳理AI应用的搭建和 Coze 的实现。</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2024-01-21/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>2023年总结</title>
+      <link>http://localhost:1313/articels/2024-01-01/</link>
+      <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2024-01-01/</guid>
+      <description>今年不管是自己还是社会都有很多变化，想尝试用文字记录下来。</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2024-01-01/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>关于脸肿 但不仅限于脸肿</title>
+      <link>http://localhost:1313/articels/2022-07-08/</link>
+      <pubDate>Fri, 08 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2022-07-08/</guid>
+      <description>回顾关于字幕组的事情</description>
+      
+    </item>
+    
+  </channel>
+</rss>

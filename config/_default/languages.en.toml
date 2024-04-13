@@ -1,0 +1,20 @@
+languageCode = "en"
+languageName = "English"
+weight = 1
+title = "Utkarsh Deoli"
+
+[params]
+displayName = "EN"
+isoCode = "en"
+rtl = false
+dateFormat = "2 January 2006"
+logo = "nekonobg.png"
+secondaryLogo = "neko.jpg"
+description = "Hey! Welcome to my website!"
+
+[author]
+name = "Utkarsh Deoli"
+image = "20131113_054558.jpg"
+headline = "Your Friendly Neighborhood Developer"
+bio = "Utkarsh Deoli -just a developer for fun"
+links = [ { envelope = "mailto:utkarsh.deoli@gmail.com?subject=Contacting%20from%20your%20website" }, { github = "https://github.com/UtkarshDeoli" }, { linkedin = "https://www.linkedin.com/in/utkarshdeoli" }, { x-twitter = "https://x.com/utkarshdeoli" }, { youtube = "https://www.youtube.com/@utkarshdeoli" } ,{ code = "https://www.leetcode.com/sagemodeutkarsh"}]

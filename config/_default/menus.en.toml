@@ -1,0 +1,30 @@
+[[main]]
+none = "none"
+
+[[main]]
+name = "Projects"
+pageRef = "projects"
+identifier = "hqayNdRnS6"
+weight = 2
+
+[[main]]
+name = "Blog"
+pageRef = "Blog"
+identifier = "BL4vAxAMDP"
+weight = 3
+
+[[main]]
+name = "Contact"
+pageRef = "Contact"
+identifier = "f4AK879oeK"
+weight = 4
+
+[[main]]
+name = "Resume"
+pageRef = "Resume"
+url = "https://firebasestorage.googleapis.com/v0/b/utkarsh-deoli-portfolio.appspot.com/o/UtkarshDeoliCV%20(1).pdf?alt=media&token=dbb3a0de-4dd5-4f17-a410-c1ceee191f75"
+identifier = "r4AK879oeK"
+weight = 5
+
+[[footer]]
+none = "none"

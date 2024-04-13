@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="scroll-smooth" data-default-appearance="dark"
+  data-auto-appearance="true"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  
+  <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>向量相似性检索方法 &middot; Utkarsh Deoli</title>
+  <meta name="title" content="向量相似性检索方法 &middot; Utkarsh Deoli" />
+  
+  <meta name="description" content="kNN/ANN近邻算法梳理，简单介绍了基于KD-tree/IVF/HNSW/LSH的ANN实现" />
+  <meta name="keywords" content="算法原理, " />
+  
+  
+  <link rel="canonical" href="http://localhost:1313/articels/2023-10-30/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <link type="text/css" rel="stylesheet" href="/css/main.bundle.min.81c7ce66608dd0b86aa3e571076f8794993d50f0d4a5b153013edfc28642a93c4104edfdc604558908c3624b8e99386757d81f1bf8c4452c6220cf4c63970408.css"
+    integrity="sha512-gcfOZmCN0Lhqo&#43;VxB2&#43;HlJk9UPDUpbFTAT7fwoZCqTxBBO39xgRViQjDYkuOmThnV9gfG/jERSxiIM9MY5cECA==" />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.5d428d79012944375125a88085344ec5bd884b22e856048a3bace9e7c7c4ba93bbeff8218b019bb038df26621963d060ecc1f7f6c25a73aeea476386aa34937e.js"
+    integrity="sha512-XUKNeQEpRDdRJaiAhTROxb2ISyLoVgSKO6zp58fEupO77/ghiwGbsDjfJmIZY9Bg7MH39sJac67qR2OGqjSTfg=="></script>
+  
+  
+  
+  
+  
+  <script src="/js/zoom.min.js"></script>
+  
+  
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="向量相似性检索方法" />
+<meta property="og:description" content="kNN/ANN近邻算法梳理，简单介绍了基于KD-tree/IVF/HNSW/LSH的ANN实现" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/articels/2023-10-30/" /><meta property="og:image" content="http://localhost:1313/articels/2023-10-30/feature.jpg" /><meta property="article:section" content="articels" />
+<meta property="article:published_time" content="2023-10-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-10-30T00:00:00+00:00" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="http://localhost:1313/articels/2023-10-30/feature.jpg" /><meta name="twitter:title" content="向量相似性检索方法"/>
+<meta name="twitter:description" content="kNN/ANN近邻算法梳理，简单介绍了基于KD-tree/IVF/HNSW/LSH的ANN实现"/>
+
+  
+  <script type="application/ld+json">
+  [{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "articleSection": "文章",
+    "name": "向量相似性检索方法",
+    "headline": "向量相似性检索方法",
+    
+    "abstract": "kNN\/ANN近邻算法梳理，简单介绍了基于KD-tree\/IVF\/HNSW\/LSH的ANN实现",
+    "inLanguage": "en",
+    "url" : "http:\/\/localhost:1313\/articels\/2023-10-30\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Utkarsh Deoli"
+    },
+    "copyrightYear": "2023",
+    "dateCreated": "2023-10-30T00:00:00\u002b00:00",
+    "datePublished": "2023-10-30T00:00:00\u002b00:00",
+    
+    "dateModified": "2023-10-30T00:00:00\u002b00:00",
+    
+    "keywords": ["算法原理"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "841"
+  }]
+  </script>
+
+
+  
+  
+  <meta name="author" content="Utkarsh Deoli" />
+  
+  
+  
+  <link href="mailto:utkarsh.deoli@gmail.com?subject=Contacting%20from%20your%20website" rel="me" />
+  
+  
+  <link href="https://github.com/UtkarshDeoli" rel="me" />
+  
+  
+  <link href="https://www.linkedin.com/in/utkarshdeoli" rel="me" />
+  
+  
+  <link href="https://x.com/utkarshdeoli" rel="me" />
+  
+  
+  <link href="https://www.youtube.com/@utkarshdeoli" rel="me" />
+  
+  
+  <link href="https://www.leetcode.com/sagemodeutkarsh" rel="me" />
+  
+  
+  
+  
+
+<script src="/lib/jquery/jquery.slim.min.js" integrity=""></script>
+
+
+
+
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/lib/katex/katex.min.af6f85907cdfd6ed3e4906d93a8233d91c5638859f744cd1b98c9b1a3ccaab5f231bdcda49f132f6cdfe8cca86ff33ed468affab8a9a502610a664a34f0f0cfa.css" integrity="sha512-r2&#43;FkHzf1u0&#43;SQbZOoIz2RxWOIWfdEzRuYybGjzKq18jG9zaSfEy9s3&#43;jMqG/zPtRor/q4qaUCYQpmSjTw8M&#43;g==" />
+
+
+<script defer src="/lib/katex/katex.min.20da6cf7343619410c0900fbc626506c65159ea9f312f9729d5cba7aa713707378f9a4222e8f7fb9a42a7240e9749f199b7334401b3e3e4b60e29cf490492552.js" integrity="sha512-INps9zQ2GUEMCQD7xiZQbGUVnqnzEvlynVy6eqcTcHN4&#43;aQiLo9/uaQqckDpdJ8Zm3M0QBs&#43;Pktg4pz0kEklUg=="></script>
+
+
+<script defer src="/lib/katex/auto-render.min.6095714e3aadb63b14ddc4af69346ab12974c1b460654345f8d1860a0b68fcc51b22f68b757433193090bb80afc8965b65cb607e5541d0f5f0f4b2e64d69b9ff.js" integrity="sha512-YJVxTjqttjsU3cSvaTRqsSl0wbRgZUNF&#43;NGGCgto/MUbIvaLdXQzGTCQu4CvyJZbZctgflVB0PXw9LLmTWm5/w=="
+  onload="renderMathInElement(document.body);"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+  
+  
+  <meta name="theme-color"/>
+  
+  
+</head>
+<body
+  class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32">
+  <div id="the-top" class="absolute flex self-center">
+    <a class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+      href="#main-content"><span
+        class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400">&darr;</span>Skip to main content</a>
+  </div>
+  
+  
+  <div class="min-h-[148px]"></div>
+<div class="fixed inset-x-0 pl-[24px] pr-[24px]" style="z-index:100">
+  <div id="menu-blur" class="absolute opacity-0 inset-x-0 top-0 h-full single_hero_background nozoom bg-neutral dark:bg-neutral-800"></div>
+  <div class="relative max-w-[64rem] ml-auto mr-auto">
+    <div style="padding-left:0;padding-right:0;padding-top:2px;padding-bottom:3px"
+    class="main-menu flex items-center justify-between px-4 py-6 sm:px-6 md:justify-start space-x-3">
+    
+    
+    
+    <div>
+        <a href="/" class="flex">
+            <span class="sr-only">Utkarsh Deoli</span>
+
+            <img src="/nekonobg.png" width="250" height="250"
+                class="logo max-h-[5rem] max-w-[5rem] object-scale-down object-left nozoom" alt="Utkarsh Deoli" />
+
+        </a>
+    </div>
+    
+    <div class="flex flex-1 items-center justify-between">
+        <nav class="flex space-x-3">
+
+            
+            <a href="/" class="text-base font-medium text-gray-500 hover:text-gray-900">Utkarsh Deoli</a>
+            
+
+        </nav>
+        <nav class="hidden md:flex items-center space-x-5 md:ml-12 h-12">
+
+            
+            
+            
+  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        Projects
+    </p>
+</a>
+
+
+            
+            
+  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        Blog
+    </p>
+</a>
+
+
+            
+            
+  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        Contact
+    </p>
+</a>
+
+
+            
+            
+  <a href="https://firebasestorage.googleapis.com/v0/b/utkarsh-deoli-portfolio.appspot.com/o/UtkarshDeoliCV%20%281%29.pdf?alt=media&amp;token=dbb3a0de-4dd5-4f17-a410-c1ceee191f75"  target="_blank"  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        Resume
+    </p>
+</a>
+
+
+            
+            
+  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        
+    </p>
+</a>
+
+
+            
+            
+
+            
+
+
+            
+
+
+            
+            
+            <div
+                class="ltr:mr-14 rtl:ml-14 flex items-center">
+                <button id="appearance-switcher" aria-label="Dark mode switcher" type="button" class="text-base hover:text-primary-600 dark:hover:text-primary-400">
+                    <div class="flex items-center justify-center dark:hidden">
+                        
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
+
+
+                    </div>
+                    <div class="items-center justify-center hidden dark:flex">
+                        
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
+
+
+                    </div>
+                </button>
+            </div>
+            
+
+        </nav>
+        <div class="flex md:hidden items-center space-x-5 md:ml-12 h-12">
+
+            <span></span>
+
+            
+
+
+            
+
+            
+            
+            <button id="appearance-switcher-mobile" aria-label="Dark mode switcher" type="button" class="text-base hover:text-primary-600 dark:hover:text-primary-400" style="margin-right:5px">
+                <div class="flex items-center justify-center dark:hidden">
+                    
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
+
+
+                </div>
+                <div class="items-center justify-center hidden dark:flex">
+                    
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
+
+
+                </div>
+            </button>
+            
+
+        </div>
+    </div>
+    <div class="-my-2 -mr-2 md:hidden">
+
+        <label id="menu-button" for="menu-controller" class="block">
+            <input type="checkbox" id="menu-controller" class="hidden" />
+            
+            <div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400">
+                
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"/></svg>
+
+  </span>
+
+
+            </div>
+            <div id="menu-wrapper" style="padding-top:5px;"
+                class="fixed inset-0 z-30 invisible w-screen h-screen m-0 overflow-auto transition-opacity opacity-0 cursor-default bg-neutral-100/50 backdrop-blur-sm dark:bg-neutral-900/50">
+                <ul
+                    class="flex space-y-2 mt-3 flex-col items-end w-full px-6 py-6 mx-auto overflow-visible list-none ltr:text-right rtl:text-left max-w-7xl">
+
+                    <li>
+                        <span
+                            class="cursor-pointer inline-block align-text-bottom hover:text-primary-600 dark:hover:text-primary-400">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"/></svg>
+
+  </span>
+
+</span>
+                    </li>
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            Projects
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            Blog
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            Contact
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href="https://firebasestorage.googleapis.com/v0/b/utkarsh-deoli-portfolio.appspot.com/o/UtkarshDeoliCV%20%281%29.pdf?alt=media&amp;token=dbb3a0de-4dd5-4f17-a410-c1ceee191f75"  target="_blank"  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            Resume
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                </ul>
+                
+                
+
+            </div>
+        </label>
+    </div>
+</div>
+
+
+
+
+<script>
+    (function () {
+        var $mainmenu = $('.main-menu');
+        var path = window.location.pathname;
+        $mainmenu.find('a[href="' + path + '"]').each(function (i, e) {
+            $(e).children('p').addClass('active');
+        });
+    })();
+</script>
+
+
+  </div>
+</div>
+<script>
+  window.addEventListener('scroll', function (e) {
+    var scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    var background_blur = document.getElementById('menu-blur');
+    background_blur.style.opacity = (scroll / 300);
+  });
+</script>
+
+  
+  <div class="relative flex flex-col grow">
+    <main id="main-content" class="grow">
+      
+
+
+<article>
+  
+  
+  
+  
+  
+  
+
+
+
+
+    
+    <div class="fixed inset-x-0 top-0 h-[800px] single_hero_background nozoom"
+    style="background-image:url(/articels/2023-10-30/feature_hu254fc8ba1bee4a9c377f448b66d4e638_491614_1200x0_resize_q75_box.jpg);">
+    
+
+
+    <div class="absolute inset-0 bg-gradient-to-t from-neutral dark:from-neutral-800 to-transparent mix-blend-normal">
+    </div>
+    <div
+        class="absolute inset-0 opacity-60 bg-gradient-to-t from-neutral dark:from-neutral-800 to-neutral-100 dark:to-neutral-800 mix-blend-normal">
+    </div>
+</div>
+
+<div id="background-blur" class="fixed opacity-0 inset-x-0 top-0 h-full single_hero_background nozoom backdrop-blur-2xl"></div>
+<script>
+    window.addEventListener('scroll', function (e) {
+        var scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        var background_blur = document.getElementById('background-blur');
+        background_blur.style.opacity = (scroll / 300)
+    });
+</script>
+
+  
+  
+
+  <header id="single_header" class="mt-5 max-w-prose">
+    
+    <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+      向量相似性检索方法
+    </h1>
+    <div class="mt-1 mb-6 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+      
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+<div class="flex flex-row flex-wrap items-center">
+  
+  
+  <time datetime="2023-10-30 00:00:00 &#43;0000 UTC">30 October 2023</time><span class="px-2 text-primary-500">&middot;</span><span>841 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">4 mins</span><span class="px-2 text-primary-500">&middot;</span><span>
+  
+  
+    
+    
+      
+      
+        
+        
+      
+      
+    
+  
+  <span id="views_articels/2023-10-30/index.md" class="animate-pulse inline-block text-transparent max-h-3 rounded-full mt-[-2px] align-middle bg-neutral-300 dark:bg-neutral-400" title="views">loading</span>
+  <span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+<path fill="currentColor" d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg>
+  </span>
+
+</span>
+</span><span class="px-2 text-primary-500">&middot;</span><span>
+  
+  
+    
+    
+      
+      
+        
+        
+      
+      
+    
+  
+  <span id="likes_articels/2023-10-30/index.md"
+    class="animate-pulse inline-block text-transparent max-h-3 rounded-full mt-[-2px] align-middle bg-neutral-300 dark:bg-neutral-400"
+    title="likes">loading</span>
+  <span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path fill="currentColor" d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+  </span>
+
+</span>
+</span><span class="px-2 text-primary-500">&middot;</span><span>
+    <button id="button_likes"
+        class="rounded-md border border-primary-400 px-1 py-[1px] text-xs font-normal text-primary-700 dark:border-primary-600 dark:text-primary-400"
+        onclick="process_article()">
+        <span id="button_likes_heart" style="display:none" class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path fill="currentColor" d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+  </span>
+
+ </span>
+        <span id="button_likes_emtpty_heart" class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path fill="currentColor" d="M244 84L255.1 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 0 232.4 0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84C243.1 84 244 84.01 244 84L244 84zM255.1 163.9L210.1 117.1C188.4 96.28 157.6 86.4 127.3 91.44C81.55 99.07 48 138.7 48 185.1V190.9C48 219.1 59.71 246.1 80.34 265.3L256 429.3L431.7 265.3C452.3 246.1 464 219.1 464 190.9V185.1C464 138.7 430.4 99.07 384.7 91.44C354.4 86.4 323.6 96.28 301.9 117.1L255.1 163.9z"/></svg>
+  </span>
+
+</span>
+        <span id="button_likes_text">&nbsp;Like</span>
+    </button>
+</span>
+  
+
+  
+  
+</div>
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+    
+    
+
+    
+
+    
+      
+      
+        
+        
+<div class="flex author">
+  
+    
+    
+      
+    
+    
+      
+        
+      
+      <img class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4" width="96" height="96"
+      alt="Utkarsh Deoli" src="/20131113_054558_hu3c0fbd01a0e6baca8802d02a563621ff_1368799_192x192_fill_q75_box_center.jpg" />
+    
+  
+  <div class="place-self-center">
+    
+    <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+      Author
+    </div>
+    <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+      Utkarsh Deoli
+    </div>
+    
+    
+    <div class="text-sm text-neutral-700 dark:text-neutral-400">Utkarsh Deoli -just a developer for fun</div>
+    
+    <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:utkarsh.deoli@gmail.com?subject=Contacting%20from%20your%20website"
+          target="_blank"
+          aria-label="Envelope"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/UtkarshDeoli"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/utkarshdeoli"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://x.com/utkarshdeoli"
+          target="_blank"
+          aria-label="X-Twitter"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.youtube.com/@utkarshdeoli"
+          target="_blank"
+          aria-label="Youtube"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>
+
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.leetcode.com/sagemodeutkarsh"
+          target="_blank"
+          aria-label="Code"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+<path fill="currentColor"  d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/></svg>
+  </span>
+
+</span></a
+        >
+      
+    
+  </div>
+
+</div>
+  </div>
+</div>
+
+      
+
+      
+
+      
+      <div class="mb-5"></div>
+      
+
+    
+
+  </header>
+  
+  <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+    
+    
+
+      <div class="min-w-0 min-h-0 max-w-fit">
+        
+        
+
+
+        <div class="article-content max-w-prose mb-20">
+          
+
+
+
+<h2 class="relative group">kNN/ANN 
+    <div id="knnann" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#knnann" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>k近邻算法全称是 <strong><em>k</em>-nearest neighbors algorithm</strong>，简称<strong>kNN</strong>，最早是在1967提出的，论文DOI 是 <strong>10.1109/TIT.1967.1053964</strong>。</p>
+<p>kNN算法想解决的问题如下：给定一个n维的向量数据集，和一个查询向量 Q，计算 Q 与数据集中所有向量之间的距离，然后按照距离大小，找到最接近 Q 的k个向量 (top k)。</p>
+<p>
+
+
+
+
+  
+  
+    
+  
+  
+    <figure>
+      
+      <img
+        class="my-0 rounded-md"
+        loading="lazy"
+        srcset="
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/kNN_hua15cbf22a8c90e783d5e9c94307581cc_35284_330x0_resize_box_3.png 330w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/kNN_hua15cbf22a8c90e783d5e9c94307581cc_35284_660x0_resize_box_3.png 660w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/kNN_hua15cbf22a8c90e783d5e9c94307581cc_35284_1024x0_resize_box_3.png 1024w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/kNN_hua15cbf22a8c90e783d5e9c94307581cc_35284_1320x0_resize_box_3.png 2x"
+        src="/articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/kNN_hua15cbf22a8c90e783d5e9c94307581cc_35284_660x0_resize_box_3.png"
+        alt="Untitled"
+      />
+      
+      
+    </figure>
+  
+
+</p>
+<p>kNN算法有三点需要注意的</p>
+<ul>
+<li>算法超参数 k</li>
+<li>距离度量</li>
+<li>排序和查询 topK</li>
+</ul>
+<p>kNN 算法是一种暴力搜索(<strong>brute-force</strong>)，需要遍历所有数据集，大数据量情况下执行效率可想而知。于是就有了2种通过牺牲精度换取时间和空间的方式：</p>
+<ul>
+<li>减少查询范围</li>
+<li>减少向量维度</li>
+</ul>
+<p>这种改进后的算法被称为 <strong>近似最近邻算法（Approximate Nearest Neighbor, ANN）</strong>。针对上面两种方式产生了两种对应的方法：</p>
+<ul>
+<li>通过对<strong>数据集划分</strong>，减少查询范围，每个子集合中数据结构可以是树、图、倒排索引等等</li>
+<li>使用<strong>量化</strong>(Quantization) 有损压缩高维向量，减少高维向量时的计算量，经常使用的是乘积量化 (Product quantization)</li>
+</ul>
+
+
+<h2 class="relative group">距离度量 
+    <div id="%E8%B7%9D%E7%A6%BB%E5%BA%A6%E9%87%8F" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E8%B7%9D%E7%A6%BB%E5%BA%A6%E9%87%8F" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>距离度量决定了向量之间的距离 (distance)，很大程度上决定了空间的划分、候选节点和查询节点的距离和排序等等，这里列举5中距离的公式</p>
+<p>
+
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" loading="lazy" src="8a8d1472f8544080be05f979f9c5b4a4/%E8%B7%9D%E7%A6%BB%E5%BA%A6%E9%87%8F.png" alt="Untitled" />
+      
+    </figure>
+  
+
+</p>
+
+
+<h2 class="relative group">向量量化 (Vector Quantization) 
+    <div id="%E5%90%91%E9%87%8F%E9%87%8F%E5%8C%96-vector-quantization" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%90%91%E9%87%8F%E9%87%8F%E5%8C%96-vector-quantization" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>矢量量化 (Vector Quantization) 可以向量压缩/编码/转换成长度更短、内存更高效的表示形式。显而易见地，这是一种有损压缩的方式，提升了ANN效率的同时牺牲了精度。但在实践中，这种精度损失是可以允许的。从数学的角度讲，是一种<strong>向量离散化</strong>的手段。</p>
+<p>矢量量化中最有名的算法是乘积量化 (PQ, Product quantization)</p>
+
+
+<h4 class="relative group">乘积量化 (Product quantization) 
+    <div id="%E4%B9%98%E7%A7%AF%E9%87%8F%E5%8C%96-product-quantization" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E4%B9%98%E7%A7%AF%E9%87%8F%E5%8C%96-product-quantization" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>以乘积量化为例，首先我们会将向量分割成多个<strong>子向量(subvectors)</strong>。所有向量的子向量形成一个子空间，在子空间中进行 K-means 聚类算法，并记录在这个子空间中距离子向量最近的质心ID，所有子向量的质心ID组合起来，就是单个向量的PQ code。</p>
+<p>量化过后，向量会被转换为n个质心ID，所以为了更有效地存储，质心ID的数量k往往是2的幂，对应的内存需要存储 \(n * log(k)\) 字节</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/PQ code.png)</p>
+<p>现在我们有了量化后的 PQ code 集合，那么如何在 PQ code 集合中进行 ANN 搜索？</p>
+<p>同样地，将查询向量分割成n个子向量，每个子向量到对应子空间中所有质心的距离，以矩阵的形式存储在 d 中，我们把矩阵 d 中每个节点称为 <strong>部分距离 (<em>partial distances</em>)</strong>，个人感觉可以理解为相对距离。</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/PQ 向量矩阵.png)</p>
+<p>对于数据集中的向量，我们拿到每个向量的 PQ code，在矩阵 d 中找到每个子空间中对应质心的部分(相对)距离，这样我们得到了 n 个部分(相对)距离。假设对这组部分(相对)距离使用<strong>欧几里得</strong>计算，可以大体计算出当前样本对于查询向量的相对距离，根据这个距离排序就可以得到 topK。</p>
+<p>这种方式计算出的样本向量和查询向量之间的距离，非常接近这两个向量之间的实际距离。</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/PQ distance.png)</p>
+
+
+<h2 class="relative group">数据结构 
+    <div id="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>先说一下 kNN 的算法实现，数据集的数据结构主要有两种：线性Linear 和 k维度数 K-D Tree。</p>
+<ul>
+<li>线性 Linear 维护了一个线性数组来放所有的数据</li>
+<li>K-D Tree 用一个k维二叉树维护所有的数据</li>
+</ul>
+<p>实现ANN算法需要分为2个维度：<strong>空间的划分</strong> 和 节点<strong>数据结构的选择</strong>。数据结构的选择比较多，有kd树、倒排索引IVF、图HNSW、哈希LSH等等，下面我们依次细说。</p>
+
+
+<h3 class="relative group">基于kd树的实现——以<strong>Annoy为例</strong> 
+    <div id="%E5%9F%BA%E4%BA%8Ekd%E6%A0%91%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%BB%A5annoy%E4%B8%BA%E4%BE%8B" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%9F%BA%E4%BA%8Ekd%E6%A0%91%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%BB%A5annoy%E4%B8%BA%E4%BE%8B" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>先看一下kd树的数据结构，这里参考的是 <a href="https://github.com/sjwhitworth/golearn/blob/master/kdtree/kdtree.go"   target="_blank">
+    golearn/kdtree/kdtree.go</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">node</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">feature</span>  <span class="kt">int</span> <span class="c1">// -1: leaf, -2: nil
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">value</span>    <span class="p">[]</span><span class="kt">float64</span> <span class="c1">// 空间矢量，该节点代表的空间范围
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">srcRowNo</span> <span class="kt">int</span> <span class="c1">// 垂直于分割超平面的方向轴序号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">left</span>     <span class="o">*</span><span class="nx">node</span> <span class="c1">// 左子树
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">right</span>    <span class="o">*</span><span class="nx">node</span> <span class="c1">// 右子树
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Tree is a kdtree.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Tree</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">firstDiv</span> <span class="o">*</span><span class="nx">node</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">data</span>     <span class="p">[][]</span><span class="kt">float64</span> <span class="c1">// 数据矢量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>
+
+
+
+
+  
+  
+    
+  
+  
+    <figure>
+      
+      <img
+        class="my-0 rounded-md"
+        loading="lazy"
+        srcset="
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/KD-Tree_hu868f985fa79fc72b290035c4218acd0d_44838_330x0_resize_box_3.png 330w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/KD-Tree_hu868f985fa79fc72b290035c4218acd0d_44838_660x0_resize_box_3.png 660w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/KD-Tree_hu868f985fa79fc72b290035c4218acd0d_44838_1024x0_resize_box_3.png 1024w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/KD-Tree_hu868f985fa79fc72b290035c4218acd0d_44838_1320x0_resize_box_3.png 2x"
+        src="/articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/KD-Tree_hu868f985fa79fc72b290035c4218acd0d_44838_660x0_resize_box_3.png"
+        alt="Untitled"
+      />
+      
+      
+    </figure>
+  
+
+</p>
+<p>我们说到 kNN 和 ANN 的实现都可以使用kd树，ANN最大的改动点在于，是将单棵树划分为多棵树，以此提高执行效率。<strong>Annoy</strong> 正是使用了这种思路实现的 ANN 算法。</p>
+<p><strong>Annoy</strong> 的思路是，在整个 n 维空间中随机选取两个点，这两个点可以连成一个 n-1 维超平面 (<em>hyperplane</em>) ，此超平面的<strong>法向平面</strong>可以把整个空间分割为两部分。以此类推，当我随机选择N对点就有了N个法平面，可以将整个空间切分为 2N 块，直到将子空间中的样本数限制在K以内。</p>
+<p>每一组随机拆分都可以构建一颗下图所示的树，我们依次来构建 M 组随机拆分，这样我们可以得到M个树，其中每棵树都包含了所有节点。此时我们就有了一个森林。</p>
+<p>搜索的时候步骤如下</p>
+<ol>
+<li>根据森林中所有树的root节点构建一个优先队列</li>
+<li>找到每棵树中的k个近邻候选人</li>
+<li>移出重复的候选人</li>
+<li>计算去重后所有候选人和查询向量的距离</li>
+<li>根据距离队候选人排序</li>
+<li>返回 topK</li>
+</ol>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/Annoy 空间划分.png)</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/Annoy 树.png)</p>
+<p>总结一下：</p>
+<ul>
+<li>在空间的划分方面，<strong>Annoy</strong> 会提供多组分割，每组分割构成一颗树，每棵树内会有多个根据法平面切割的子空间，保持每个子空间维持K个节点</li>
+<li>每个子空间中K个节点，通过K-D Tree的方式构建</li>
+<li>距离选择方面，<strong>Annoy</strong> 提供了欧几里得距离、曼哈顿距离、余弦距离、汉明距离 和 点积距离 5种</li>
+</ul>
+<p>最后十分推荐阅读 Annoy 开发者之一的 <strong>Erik Bernhardsson</strong> 写的这篇文章。</p>
+<p><a href="https://erikbern.com/2015/10/01/nearest-neighbors-and-vector-models-part-2-how-to-search-in-high-dimensional-spaces"   target="_blank">
+    Nearest neighbors and vector models – part 2 – algorithms and data structures</a></p>
+
+
+<h3 class="relative group">基于IVF倒排索引实现——以Faiss为例 
+    <div id="%E5%9F%BA%E4%BA%8Eivf%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95%E5%AE%9E%E7%8E%B0%E4%BB%A5faiss%E4%B8%BA%E4%BE%8B" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%9F%BA%E4%BA%8Eivf%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95%E5%AE%9E%E7%8E%B0%E4%BB%A5faiss%E4%B8%BA%E4%BE%8B" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>倒排索引是一种常见的索引形式，顾名思义是一个单词/数字到文档ID的KV映射，如下图。再具体执行查询时，会先通过哈希函数计算出query的值，然后从 IVF 索引的哈希表中获取对应的映射值。映射值一般都是一组数据，然后遍历这组数据查询最近topK。Faiss 在底层正是用了这种数据结构。</p>
+<p>
+
+
+
+
+  
+  
+    
+  
+  
+    <figure>
+      
+      <img
+        class="my-0 rounded-md"
+        loading="lazy"
+        srcset="
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF_hu4d2ca46373d230b5e97ce5a40f0860fb_59416_330x0_resize_box_3.png 330w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF_hu4d2ca46373d230b5e97ce5a40f0860fb_59416_660x0_resize_box_3.png 660w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF_hu4d2ca46373d230b5e97ce5a40f0860fb_59416_1024x0_resize_box_3.png 1024w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF_hu4d2ca46373d230b5e97ce5a40f0860fb_59416_1320x0_resize_box_3.png 2x"
+        src="/articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF_hu4d2ca46373d230b5e97ce5a40f0860fb_59416_660x0_resize_box_3.png"
+        alt="Untitled"
+      />
+      
+      
+    </figure>
+  
+
+</p>
+<p><strong><a href="https://github.com/facebookresearch/faiss"   target="_blank">
+    Faiss</a></strong> (<em>Facebook AI Search Similarity</em>) 是 Facebook 提出的一种 ANN算法。</p>
+<p>距离度量方面，<strong>Faiss</strong> 中提供了两种实现，具体的代码在<code>faiss/IndexFlat.h</code> :</p>
+<ul>
+<li><em>IndexFlatL2</em>：欧几里得距离的实现</li>
+<li><em>IndexFlatIP</em>：内积(inner product)的实现</li>
+</ul>
+<p>空间划分方面 <strong>Faiss</strong> 实现了K-means聚类算法：</p>
+<ol>
+<li>随机初始k个聚类中心(也叫<strong>质心</strong> <strong>centroids</strong>)</li>
+<li>计算每个样本到质心的距离并将样本分配到最近的质心，由此组成聚类</li>
+<li>然后对每个聚类中样本求平均，得到新的一组聚类质心；如果前后质心有变化，则使用新的质心组重复步骤2，无变化则下一步</li>
+<li>质心不再变化时，则代表我们找到了相对优质的质心</li>
+<li>以这些质心和聚类所属的样本划分空间，此时我们就得到了<strong>沃罗诺伊图</strong>（Voronoi Diagram)</li>
+</ol>
+<p>查询的时候，只需要找到距离查询向量最近的 <strong>nprobe</strong> 个质心，计算候选子空间内个样本和查询向量的距离并排序即可。</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/IVF-Voronoi Diagram.png)</p>
+<p>下面看看 IVF倒排索引方面，faiss中定义了一个头文件用来表示IVF的基础实现 <code>faiss/IndexIVF.h</code>,</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Level1Quantizer</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">Index</span><span class="o">*</span> <span class="n">quantizer</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span> <span class="c1">/// 向量-倒排列表映射的量化器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">size_t</span> <span class="n">nlist</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">/// 倒排列表的数量/Voronoi单元空间的数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">IndexIVFInterface</span> <span class="o">:</span> <span class="n">Level1Quantizer</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">size_t</span> <span class="n">nprobe</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>    <span class="c1">/// ANN查询时候的探针数量，即确定近似候选人所需的区域数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">size_t</span> <span class="n">max_codes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">IndexIVF</span> <span class="o">:</span> <span class="n">Index</span><span class="p">,</span> <span class="n">IndexIVFInterface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">InvertedLists</span><span class="o">*</span> <span class="n">invlists</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span> <span class="c1">/// 倒排列表的指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">int</span> <span class="n">parallel_mode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">/// 是否使用 OpenMP 并行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>倒排索引的实际内容都存储在 <strong>InvertedLists</strong> 中，具体的数据结构如下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="kt">int64_t</span> <span class="n">faiss_idx_t</span><span class="p">;</span> <span class="c1">///&lt; all indices are this type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">typedef</span> <span class="n">faiss_idx_t</span> <span class="n">idx_t</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">InvertedLists</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">size_t</span> <span class="n">nlist</span><span class="p">;</span>     <span class="c1">/// 倒排索引的数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">size_t</span> <span class="n">code_size</span><span class="p">;</span> <span class="c1">/// 每个向量的大小 code size per vector in bytes
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="n">use_iterator</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">/// 倒排列表数组的实现 (默认)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="nc">ArrayInvertedLists</span> <span class="o">:</span> <span class="n">InvertedLists</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;&gt;</span> <span class="n">codes</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">idx_t</span><span class="o">&gt;&gt;</span> <span class="n">ids</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
+
+<h4 class="relative group">IVFPQ 
+    <div id="ivfpq" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#ivfpq" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>上面讲了 <strong>faiss</strong> 如何进行分区，我们再结合前面说到的 PQ 量化算法，这就有了 IVFPQ，具体的步骤如下</p>
+<ol>
+<li>对整个向量空间，通过 K-means 找到质心(centroid)并划分为 n 个 Voronoi 单元</li>
+<li>每个Voronoi单元中的样本，计算其到质心(centroid)的相对距离，即以质心作为0点得到相对向量</li>
+<li>对每个Voronoi单元中样本的相对向量进行 PQ 乘积量化，即将Voronoi单元中的相对向量样本拆成子向量，对子向量空间做聚类得到质心，将向量转换成 PQ code</li>
+</ol>
+<p>
+
+
+
+
+  
+  
+    
+  
+  
+    <figure>
+      
+      <img
+        class="my-0 rounded-md"
+        loading="lazy"
+        srcset="
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVFPQ_hu240e51fb47c5e9d68f4b3cc1b9fb8d56_72492_330x0_resize_box_3.png 330w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVFPQ_hu240e51fb47c5e9d68f4b3cc1b9fb8d56_72492_660x0_resize_box_3.png 660w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVFPQ_hu240e51fb47c5e9d68f4b3cc1b9fb8d56_72492_1024x0_resize_box_3.png 1024w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVFPQ_hu240e51fb47c5e9d68f4b3cc1b9fb8d56_72492_1320x0_resize_box_3.png 2x"
+        src="/articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVFPQ_hu240e51fb47c5e9d68f4b3cc1b9fb8d56_72492_660x0_resize_box_3.png"
+        alt="Untitled"
+      />
+      
+      
+    </figure>
+  
+
+</p>
+<p>总结一下</p>
+<ul>
+<li>在空间划分方面，<strong>Faiss</strong> 实现了 K-means 算法选出质心，并使用了主成分分析(PCA, <em>Principal components analysis</em>) 和 乘积量化(PQ, Product quantization) 对向量进行了降维和量化</li>
+<li>子空间存储方面，<strong>Faiss</strong> 提供了 IVF 倒排索引、HNSW 和 LSH 3种方式，这里主要介绍了IVF</li>
+<li>距离度量方面，<strong>Faiss</strong> 实现了欧几里得和内积2种距离</li>
+</ul>
+<p>最后 <strong>Faiss</strong> 的文档可以看下面这个</p>
+<p><a href="https://github.com/facebookresearch/faiss/wiki"   target="_blank">
+    faiss wiki</a></p>
+<p><a href="https://www.pinecone.io/learn/series/faiss/faiss-tutorial/"   target="_blank">
+    faiss-tutorial</a></p>
+
+
+<h3 class="relative group">基于HNSW图的实现——以pgvector为例 
+    <div id="%E5%9F%BA%E4%BA%8Ehnsw%E5%9B%BE%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%BB%A5pgvector%E4%B8%BA%E4%BE%8B" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%9F%BA%E4%BA%8Ehnsw%E5%9B%BE%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%BB%A5pgvector%E4%B8%BA%E4%BE%8B" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>HNSW全称是分层的可导航小世界 (<strong><a href="https://arxiv.org/pdf/1603.09320.pdf"   target="_blank">
+    <em>Hierarchical Navigable Small World</em></a></strong>)。</p>
+<p>先来看 NWS 即可导航小世界，也被称为德劳内图 (Delaunay Graph)：假定有个X个向量样本，每个样本需要和M个相邻样本相连，构建的过程中只需要依次求出样本距离当前图中所有节点的距离，并连接M个节点即可。</p>
+<p>搜索的时候使用贪心算法，选择一个节点作为头结点，计算头结点及其相连节点到查询节点的距离，如果头结点最近，则当前头结点是他近邻节点，否则选择更近的节点并重复上述步骤。</p>
+<p>
+
+
+
+
+  
+  
+    
+  
+  
+    <figure>
+      
+      <img
+        class="my-0 rounded-md"
+        loading="lazy"
+        srcset="
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/NSW_huc2fa19f47544b340a59d9f9c146b2c66_32387_330x0_resize_box_3.png 330w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/NSW_huc2fa19f47544b340a59d9f9c146b2c66_32387_660x0_resize_box_3.png 660w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/NSW_huc2fa19f47544b340a59d9f9c146b2c66_32387_1024x0_resize_box_3.png 1024w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/NSW_huc2fa19f47544b340a59d9f9c146b2c66_32387_1320x0_resize_box_3.png 2x"
+        src="/articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/NSW_huc2fa19f47544b340a59d9f9c146b2c66_32387_660x0_resize_box_3.png"
+        alt="Untitled"
+      />
+      
+      
+    </figure>
+  
+
+</p>
+<p>HNSW 是在 NSW 的基础上进行了分层，这种分层思想借鉴了<strong>跳表(skip-lists)</strong>，唯一的区别是在于跳表是对链表进行分层，而 HNSW 是对 NSW 图进行分层。</p>
+<p>构建 HNSW 的时候，相比构建NSW，“如何确定节点插入的层数”是HNSW最需要关注的问题。</p>
+<p><a href="https://arxiv.org/abs/1603.09320"   target="_blank">
+    HNSW的论文</a>中提出了一种计算每个插入节点的level公式。其中 \(m_L\) 是归一化因子，值越大 \(l\) 就越大，代表节点在较高层上出现的概率越大；L 是最大层数。</p>
+<p>$$
+l = L - ln(unif(0..1)) *m _L
+$$</p>
+<p>在查询的时候，从最上层的头结点开始，找到邻居节点中距离查询节点最近的，直到找到当前层的距离查询节点最近的节点，然后到下一层查询，以此类推，直到查询到第0层，即可找到最近邻节点。</p>
+<p>
+
+
+
+
+  
+  
+    
+  
+  
+    <figure>
+      
+      <img
+        class="my-0 rounded-md"
+        loading="lazy"
+        srcset="
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/HNSW_hu6ce91ec32140ef108543e46096a59b32_54049_330x0_resize_box_3.png 330w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/HNSW_hu6ce91ec32140ef108543e46096a59b32_54049_660x0_resize_box_3.png 660w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/HNSW_hu6ce91ec32140ef108543e46096a59b32_54049_1024x0_resize_box_3.png 1024w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/HNSW_hu6ce91ec32140ef108543e46096a59b32_54049_1320x0_resize_box_3.png 2x"
+        src="/articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/HNSW_hu6ce91ec32140ef108543e46096a59b32_54049_660x0_resize_box_3.png"
+        alt="Untitled"
+      />
+      
+      
+    </figure>
+  
+
+</p>
+<p><a href="https://github.com/pgvector/pgvector"   target="_blank">
+    pgvector</a> 实现了以这种数据结构的ANN算法，pgvector 以PostgresSQL插件的方式为其提供的 ANN 近似查询的能力，先来看代码中定义的数据结构</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 向量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">Vector</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">int32</span>		<span class="n">vl_len_</span><span class="p">;</span>		<span class="cm">/* varlena header (do not touch directly!) */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">int16</span>		<span class="n">dim</span><span class="p">;</span>			<span class="cm">/* number of dimensions */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">int16</span>		<span class="n">unused</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">float</span>		<span class="n">x</span><span class="p">[</span><span class="n">FLEXIBLE_ARRAY_MEMBER</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>			<span class="n">Vector</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">HnswElementData</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">List</span>	   <span class="o">*</span><span class="n">heaptids</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">uint8</span>		<span class="n">level</span><span class="p">;</span>  <span class="c1">// 层数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">HnswNeighborArray</span> <span class="o">*</span><span class="n">neighbors</span><span class="p">;</span> <span class="c1">// 近邻节点数组
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">BlockNumber</span> <span class="n">blkno</span><span class="p">;</span> <span class="c1">// 块号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">OffsetNumber</span> <span class="n">offno</span><span class="p">;</span>  <span class="c1">// 补偿号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">Vector</span>	   <span class="o">*</span><span class="n">vec</span><span class="p">;</span>  <span class="c1">// 向量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>			<span class="n">HnswElementData</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">HnswMetaPageData</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">uint32</span>		<span class="n">magicNumber</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">uint32</span>		<span class="n">version</span><span class="p">;</span> <span class="c1">// 版本
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">uint32</span>		<span class="n">dimensions</span><span class="p">;</span> <span class="c1">// 维度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">uint16</span>		<span class="n">m</span><span class="p">;</span> <span class="c1">// 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">uint16</span>		<span class="n">efConstruction</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BlockNumber</span> <span class="n">entryBlkno</span><span class="p">;</span> <span class="c1">// 入口块号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">OffsetNumber</span> <span class="n">entryOffno</span><span class="p">;</span> <span class="c1">// 入口offset
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">int16</span>		<span class="n">entryLevel</span><span class="p">;</span> <span class="c1">// 入口层数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">BlockNumber</span> <span class="n">insertPage</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>			<span class="n">HnswMetaPageData</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">HnswMetaPageData</span> <span class="o">*</span> <span class="n">HnswMetaPage</span><span class="p">;</span>
+</span></span></code></pre></div><p>其次我们看看 pgvector 中如何给节点分配层数</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define HNSW_DEFAULT_M	16
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 最佳 ML 值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define HnswGetMl(m) (1 / log(m))
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">// 计算最大层数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define HnswGetMaxLevel(m) Min(((BLCKSZ - MAXALIGN(SizeOfPageHeaderData) - MAXALIGN(sizeof(HnswPageOpaqueData)) - offsetof(HnswNeighborTupleData, indextids) - sizeof(ItemIdData)) / (sizeof(ItemPointerData)) / m) - 2, 255)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 随机数，介于0-1之间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#if PG_VERSION_NUM &gt;= 150000
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RandomDouble() pg_prng_double(&amp;pg_global_prng_state)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#else
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RandomDouble() (((double) random()) / MAX_RANDOM_VALUE)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 每个节点上层的最大连接数
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">HnswGetM</span><span class="p">(</span><span class="n">Relation</span> <span class="n">index</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HnswOptions</span> <span class="o">*</span><span class="n">opts</span> <span class="o">=</span> <span class="p">(</span><span class="n">HnswOptions</span> <span class="o">*</span><span class="p">)</span> <span class="n">index</span><span class="o">-&gt;</span><span class="n">rd_options</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">opts</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">opts</span><span class="o">-&gt;</span><span class="n">m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="n">HNSW_DEFAULT_M</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 初始化节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">HnswInitElement</span><span class="p">(</span><span class="n">ItemPointer</span> <span class="n">heaptid</span><span class="p">,</span> <span class="kt">int</span> <span class="n">m</span><span class="p">,</span> <span class="kt">double</span> <span class="n">ml</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxLevel</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HnswElement</span> <span class="n">element</span> <span class="o">=</span> <span class="nf">palloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">HnswElementData</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 计算层数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">int</span>			<span class="n">level</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="o">-</span><span class="nf">log</span><span class="p">(</span><span class="nf">RandomDouble</span><span class="p">())</span> <span class="o">*</span> <span class="n">ml</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">level</span> <span class="o">&gt;</span> <span class="n">maxLevel</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="n">level</span> <span class="o">=</span> <span class="n">maxLevel</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">element</span><span class="o">-&gt;</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>pgvector最早还实现了基于IVF的 ANN实现，这部分就不详细展开。</p>
+
+
+<h4 class="relative group">IVF-HNSW 
+    <div id="ivf-hnsw" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#ivf-hnsw" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>在2018年的论文<a href="https://github.com/dbaranchuk/ivf-hnsw"   target="_blank">
+    Revisiting the Inverted Indices for Billion-Scale Approximate Nearest Neighbors</a> 提出了一种 HNSW + IVF 的方法，并称可以处理亿级向量数据的ANN查询。核心的点主要有以下几点：</p>
+<ul>
+<li>使用 HNSW 对数据集进行空间划分，通过层次结构，将数据集划分为多个区域。HNSW中的节点对应一个质心，一个质心代表一个子空间。</li>
+<li>针对每个子空间，有一个IVF索引来存储所属的所有向量</li>
+<li>对IVF索引中的向量进行 PQ 编码来对向量进行量化</li>
+</ul>
+<p>
+
+
+
+
+  
+  
+    
+  
+  
+    <figure>
+      
+      <img
+        class="my-0 rounded-md"
+        loading="lazy"
+        srcset="
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF-HNSW_hu9ad5f36ac641754981b543e041549b99_182798_330x0_resize_box_3.png 330w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF-HNSW_hu9ad5f36ac641754981b543e041549b99_182798_660x0_resize_box_3.png 660w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF-HNSW_hu9ad5f36ac641754981b543e041549b99_182798_1024x0_resize_box_3.png 1024w,
+        /articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF-HNSW_hu9ad5f36ac641754981b543e041549b99_182798_1320x0_resize_box_3.png 2x"
+        src="/articels/2023-10-30/8a8d1472f8544080be05f979f9c5b4a4/IVF-HNSW_hu9ad5f36ac641754981b543e041549b99_182798_660x0_resize_box_3.png"
+        alt="Untitled"
+      />
+      
+      
+    </figure>
+  
+
+</p>
+
+
+<h3 class="relative group">基于LSH哈希的实现——以FALCONN为例 
+    <div id="%E5%9F%BA%E4%BA%8Elsh%E5%93%88%E5%B8%8C%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%BB%A5falconn%E4%B8%BA%E4%BE%8B" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%9F%BA%E4%BA%8Elsh%E5%93%88%E5%B8%8C%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%BB%A5falconn%E4%B8%BA%E4%BE%8B" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p><strong>LSH</strong>全称是<em><strong>Local Sensitive Hashing</strong></em>，局部敏感哈希 。</p>
+<p>顾名思义，是通过将数据向量转换成哈希值，从而缩小搜索范围，近邻节点意味着更容易发生碰撞。LSH算法主要包含3个步骤：</p>
+<ol>
+<li>
+<p><strong>Shingling:</strong> 使用 k-gram 将文本切分成连续k个字符组成的序列，然后用one-hot算法对每个序列进行编码，完成将文本转换为向量。</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/LSH Shingling.png)</p>
+</li>
+<li>
+<p><strong>MinHashing</strong>: 将 shingling得到的向量转化为”签名”(<strong>signature</strong>)，这一步的主要目的是将向量转换为更小的维度(<strong>MinHashing</strong>)，这种签名signature可以保留其样本的相似度。</p>
+<p>这一步我们首先需要<strong>随机生成</strong>多个<strong>置换向量</strong>，MinHashing方法会对置换向量和样本向量进行置换，返回置换后第一个等于1的索引。如下图，我们使用1个置换向量，向量通过MinHashing之后会得到3。</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/LSH MinHashing.png)</p>
+<p>接下来我们使用多个置换向量，然后得到每个向量的MinHashing后的值，对这个值做 <strong>signature</strong> 相似性 和 <strong>Jaccard</strong> 相似性，如下图：</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/LSH signature.png)</p>
+<p>最后我们说明一下 <strong>signature</strong> 相似性 和 <strong>Jaccard</strong> 相似性的计算方式，以 V1,V2 这对向量为例</p>
+<p>![Untitled](8a8d1472f8544080be05f979f9c5b4a4/LSH signature和Jaccard相似度比较.png)</p>
+<p>我们可以看到，通过signature计算出的相似度<strong>大体等于</strong>Jaccard 相似度，这意味着我们可以将向量转换成 signature，然后计算他们的相似度，这比我们直接通过原始向量使用Jaccard Index 计算出的相似度效率更高！</p>
+</li>
+</ol>
+
+  
+  
+  
+  
+
+
+
+<div
+  
+    class="flex px-4 py-3 rounded-md bg-primary-100 dark:bg-primary-900"
+  >
+
+  <span
+    
+      class="text-primary-400 ltr:pr-3 rtl:pl-3 flex items-center"
+    >
+
+    
+
+
+  </span>
+
+  <span
+    
+      class="dark:text-neutral-300"
+    >💡 综上，MinHashing 这一步就是将原始向量转换为signature，这种signature可以有效的保留相似信息，因为 \(signature 相似度 \approx Jaccard 相似度\)</span>
+</div>
+
+<ol start="3">
+<li>
+<p>LSH function:  LSH 方法是将签名块散列到不同的存储桶中。</p>
+<p>首先把 singature 拆分为多个相等的部分，每个部分被称为波段(bands)，每个波段包含r的值。比如 singature 有9个值，按3个一组分，则有3个波段，每个波段有3个值。</p>
+<p>然后分别对每个波段进行hash映射，映射到单独的存储桶中。如果signature被拆成n份，则代表有n个存储桶。</p>
+<p>
+
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" loading="lazy" src="8a8d1472f8544080be05f979f9c5b4a4%2FLSH%20function.png" alt="LSH function.png" />
+      
+    </figure>
+  
+
+</p>
+</li>
+</ol>
+<p>回顾一下，我们通过<strong>Shingling</strong>把文本→向量，再调用<strong>MinHashing</strong>将向量→signature签名，最后通过<strong>LSH</strong>方法对签名分段hash，并存储在不同的buckets桶中。</p>
+<p>查询的时候我们只需要将query先转换成向量，然后计算signature签名，再对签名分片，找到对应分片的存储桶中的value，拿到里面对应的向量，和哪个向量hash冲突最多就代表它是最近近邻节点。</p>
+<blockquote>
+<p>现在让我们再反过来思考LSH局部敏感哈希的含义，局部的意思是指 signature 分片，敏感指的是在每个分片的存储桶中的hash冲突，这就有了我们一开始包括最后所说的：signature分片hash碰撞的次数越多，代表和查询向量相似度也越高。</p>
+</blockquote>
+<p>FALCONN 正式实现了这种LSH算法的思想，但这里暂时不再详细描述了(懒了)。
+具体的项目地址是<a href="https://github.com/FALCONN-LIB/FALCONN"   target="_blank">
+    FALCONN</a>，项目中的wiki比较推荐看<a href="https://github.com/FALCONN-LIB/FALCONN/wiki/LSH-Primer"   target="_blank">
+    LSH-Primer</a>。</p>
+
+
+<h2 class="relative group">拓展1：ANN 基准测试 
+    <div id="%E6%8B%93%E5%B1%951ann-%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E6%8B%93%E5%B1%951ann-%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>最后推荐一个网站，对主流的大部分 ANN 算法基准测试进行了整理</p>
+<p><a href="https://ann-benchmarks.com/"   target="_blank">
+    ANN-Benchmarks</a></p>
+
+
+<h2 class="relative group">拓展2：数据向量化 
+    <div id="%E6%8B%93%E5%B1%952%E6%95%B0%E6%8D%AE%E5%90%91%E9%87%8F%E5%8C%96" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E6%8B%93%E5%B1%952%E6%95%B0%E6%8D%AE%E5%90%91%E9%87%8F%E5%8C%96" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>前面主要介绍了我们有一个向量数据集情况下，如何查询 topk。这里简单介绍一下如何做数据向量化。</p>
+<p>以文本向量化为例，向量化的方法有词袋模型、TF-IDF、共现矩阵、词嵌入(word embedding)等等，目前使用最多的是<strong>词嵌入</strong>，其中的算法原理可以看 <a href="https://deeplearning-doc.readthedocs.io/en/latest/deeplearning/NLP/NLP-text-vector.html"   target="_blank">
+    NLP–文本向量化</a>。</p>
+<p>当前基于词嵌入(embedding)所实现的模型如下：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>项目/文档地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M3E (Moka Massive Mixed Embedding)</td>
+<td><a href="https://github.com/wangyuxinwhy/uniem"   target="_blank">
+    https://github.com/wangyuxinwhy/uniem</a></td>
+</tr>
+<tr>
+<td>BGE (baai general embedding)</td>
+<td><a href="https://github.com/FlagOpen/FlagEmbedding"   target="_blank">
+    https://github.com/FlagOpen/FlagEmbedding</a></td>
+</tr>
+<tr>
+<td>text-embedding-ada-002</td>
+<td><a href="https://cloud.baidu.com/doc/WENXINWORKSHOP/s/alj562vvu"   target="_blank">
+    https://cloud.baidu.com/doc/WENXINWORKSHOP/s/alj562vvu</a></td>
+</tr>
+<tr>
+<td>文心 Embedding</td>
+<td><a href="https://cloud.baidu.com/doc/WENXINWORKSHOP/s/alj562vvu"   target="_blank">
+    https://cloud.baidu.com/doc/WENXINWORKSHOP/s/alj562vvu</a></td>
+</tr>
+<tr>
+<td>glm text embedding</td>
+<td><a href="https://open.bigmodel.cn/dev/api#text_embedding"   target="_blank">
+    https://open.bigmodel.cn/dev/api#text_embedding</a></td>
+</tr>
+<tr>
+<td>RoPE (rotary-embedding)</td>
+<td><a href="https://github.com/ZhuiyiTechnology/roformer"   target="_blank">
+    https://github.com/ZhuiyiTechnology/roformer</a></td>
+</tr>
+<tr>
+<td>LlamaCppEmbeddings</td>
+<td><a href="https://github.com/ggerganov/llama.cpp/blob/master/examples/embedding/embedding.cpp"   target="_blank">
+    https://github.com/ggerganov/llama.cpp/blob/master/examples/embedding/embedding.cpp</a></td>
+</tr>
+<tr>
+<td>text2vec</td>
+<td><a href="https://github.com/shibing624/text2vec"   target="_blank">
+    https://github.com/shibing624/text2vec</a></td>
+</tr>
+</tbody>
+</table>
+<p>看到这里我们自然而然可以联想到，文本数据可以向量化，图像、文件、统计数据等当然也可以向量化，所以ANN也适用于这些场景。</p>
+
+
+<h2 class="relative group">参考 
+    <div id="%E5%8F%82%E8%80%83" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%8F%82%E8%80%83" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p><a href="https://medium.com/@slavahead/list/similarity-search-598d963ad35e"   target="_blank">
+    List: Similarity Search | Curated by Vyacheslav Efimov | Medium</a></p>
+<p><a href="https://yongyuan.name/blog/ann-search.html"   target="_blank">
+    图像检索：再叙ANN Search</a></p>
+<p><a href="https://erikbern.com/2015/10/01/nearest-neighbors-and-vector-models-part-2-how-to-search-in-high-dimensional-spaces"   target="_blank">
+    Nearest neighbors and vector models – part 2 – algorithms and data structures</a></p>
+<p><a href="https://github.com/facebookresearch/faiss/wiki"   target="_blank">
+    faiss wiki</a></p>
+<p><a href="https://www.pinecone.io/learn/series/faiss/faiss-tutorial/"   target="_blank">
+    faiss-tutorial</a></p>
+<p><a href="https://github.com/FALCONN-LIB/FALCONN/wiki/LSH-Primer"   target="_blank">
+    LSH-Primer</a></p>
+<p><a href="https://ann-benchmarks.com/"   target="_blank">
+    ANN-Benchmarks</a></p>
+
+        </div>
+        
+        
+
+        
+        
+
+          
+      </div>
+     
+      
+      
+        
+        
+          
+          
+        
+      <script>
+        var oid = "views_articels\/2023-10-30\/index.md"
+        var oid_likes = "likes_articels\/2023-10-30\/index.md"
+      </script>
+      
+      
+      
+      <script type="text/javascript" src="/js/page.min.b06a29d42a4ed16787978e2eee1e8c797b7698db2bc14ccee78f5c80ac566fc996190a73ad80a5e987558474b20b96fa38f7d85b405f165ff72b7b163c5ad11b.js" integrity="sha512-sGop1CpO0WeHl44u7h6MeXt2mNsrwUzO549cgKxWb8mWGQpzrYCl6YdVhHSyC5b6OPfYW0BfFl/3K3sWPFrRGw=="></script>
+  
+    </section>
+  <footer class="pt-8 max-w-prose print:hidden">
+
+    
+  
+    
+    
+    
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="flex group mr-3" href="/articels/2023-09-29/">
+              <span
+                class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-3 text-neutral-700 group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Java & Go 线程模式对比</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2023-09-29 00:00:00 &#43;0000 UTC">29 September 2023</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+            <a class="flex text-right group ml-3" href="/articels/2023-12-01/">
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >TiDB知识点梳理 (PCTA 笔记)</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2023-12-01 00:00:00 &#43;0000 UTC">1 December 2023</time>
+                  
+                </span>
+              </span>
+              <span
+                class="ml-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span
+                class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+            </a>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+    
+  </footer>
+</article>
+
+      <div id="top-scroller" class="pointer-events-none absolute top-[110vh] bottom-0 w-12 ltr:right-0 rtl:left-0">
+  <a href="#the-top"
+    class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 mb-16 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+    aria-label="Scroll to top" title="Scroll to top">
+    &uarr;
+  </a>
+</div>
+    </main><footer id="site-footer" class="py-10 print:hidden">
+  
+  
+    
+    <nav class="flex flex-row pb-4 text-base font-medium text-neutral-500 dark:text-neutral-400">
+      <ul class="flex flex-col list-none sm:flex-row">
+        
+        <li class="flex mb-1 ltr:text-right rtl:text-left sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+          <a class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2 flex items-center" href=""
+            title="">
+            
+            
+          </a>
+        </li>
+        
+      </ul>
+    </nav>
+    
+  
+  <div class="flex items-center justify-between">
+
+    
+    
+    <p class="text-sm text-neutral-500 dark:text-neutral-400">
+      &copy;
+      2024
+      Utkarsh Deoli
+    </p>
+    
+
+    
+    
+
+  </div>
+  <script>
+    
+    mediumZoom(document.querySelectorAll("img:not(.nozoom)"), {
+      margin: 24,
+      background: 'rgba(0,0,0,0.5)',
+      scrollOffset: 0,
+    })
+    
+  </script>
+  
+  
+  <script type="text/javascript" src="/js/process.min.62060bb247f4de2b6dde45903668fefb68d792f365587605177b1227c0cf43588701edaca0cb40e2c8e2789bd5ce67c1d2a215b9fb258c3496a7cd25e7cb5fdf.js" integrity="sha512-YgYLskf03itt3kWQNmj&#43;&#43;2jXkvNlWHYFF3sSJ8DPQ1iHAe2soMtA4sjieJvVzmfB0qIVufsljDSWp80l58tf3w=="></script>
+  
+  
+</footer>
+  </div>
+</body>
+
+</html>

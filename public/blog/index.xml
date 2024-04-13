@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on Utkarsh Deoli</title>
+    <link>https://utkarshdeoli.web.app/blog/</link>
+    <description>Recent content in Blog on Utkarsh Deoli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2024 Utkarsh Deoli</copyright>
+    <lastBuildDate>Sat, 13 Apr 2024 23:25:36 +0530</lastBuildDate><atom:link href="https://utkarshdeoli.web.app/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Data Structures And Algo</title>
+      <link>https://utkarshdeoli.web.app/blog/dsa/</link>
+      <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
+      
+      <guid>https://utkarshdeoli.web.app/blog/dsa/</guid>
+      <description>What is DSA?</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://utkarshdeoli.web.app/blog/dsa/feature.jpg" />
+    </item>
+    
+  </channel>
+</rss>

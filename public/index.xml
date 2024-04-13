@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Utkarsh Deoli</title>
+    <link>https://utkarshdeoli.web.app/</link>
+    <description>Recent content on Utkarsh Deoli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2024 Utkarsh Deoli</copyright>
+    <lastBuildDate>Sat, 13 Apr 2024 23:25:36 +0530</lastBuildDate><atom:link href="https://utkarshdeoli.web.app/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Data Structures And Algo</title>
+      <link>https://utkarshdeoli.web.app/blog/dsa/</link>
+      <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
+      
+      <guid>https://utkarshdeoli.web.app/blog/dsa/</guid>
+      <description>What is DSA?</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://utkarshdeoli.web.app/blog/dsa/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>Forest Fire Detection &amp; Prevention</title>
+      <link>https://utkarshdeoli.web.app/projects/forestfiredetection/forestfire/</link>
+      <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
+      
+      <guid>https://utkarshdeoli.web.app/projects/forestfiredetection/forestfire/</guid>
+      <description>Introduction # This document is about Forest Fire Detection &amp;amp; Prevention.</description>
+      
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://utkarshdeoli.web.app/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://utkarshdeoli.web.app/about/</guid>
+      <description></description>
+      
+    </item>
+    
+  </channel>
+</rss>

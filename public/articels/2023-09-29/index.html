@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="scroll-smooth" data-default-appearance="dark"
+  data-auto-appearance="true"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  
+  <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Java & Go 线程模式对比 &middot; Utkarsh Deoli</title>
+  <meta name="title" content="Java & Go 线程模式对比 &middot; Utkarsh Deoli" />
+  
+  <meta name="description" content="本文旨在从源码角度阐述 Java 和 Go 中对线程/协程的管理、调度，ForkJoin模型等" />
+  <meta name="keywords" content="编程框架, " />
+  
+  
+  <link rel="canonical" href="http://localhost:1313/articels/2023-09-29/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <link type="text/css" rel="stylesheet" href="/css/main.bundle.min.81c7ce66608dd0b86aa3e571076f8794993d50f0d4a5b153013edfc28642a93c4104edfdc604558908c3624b8e99386757d81f1bf8c4452c6220cf4c63970408.css"
+    integrity="sha512-gcfOZmCN0Lhqo&#43;VxB2&#43;HlJk9UPDUpbFTAT7fwoZCqTxBBO39xgRViQjDYkuOmThnV9gfG/jERSxiIM9MY5cECA==" />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.5d428d79012944375125a88085344ec5bd884b22e856048a3bace9e7c7c4ba93bbeff8218b019bb038df26621963d060ecc1f7f6c25a73aeea476386aa34937e.js"
+    integrity="sha512-XUKNeQEpRDdRJaiAhTROxb2ISyLoVgSKO6zp58fEupO77/ghiwGbsDjfJmIZY9Bg7MH39sJac67qR2OGqjSTfg=="></script>
+  
+  
+  
+  
+  
+  <script src="/js/zoom.min.js"></script>
+  
+  
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Java &amp; Go 线程模式对比" />
+<meta property="og:description" content="本文旨在从源码角度阐述 Java 和 Go 中对线程/协程的管理、调度，ForkJoin模型等" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/articels/2023-09-29/" /><meta property="og:image" content="http://localhost:1313/articels/2023-09-29/feature.jpg" /><meta property="article:section" content="articels" />
+<meta property="article:published_time" content="2023-09-29T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-09-29T00:00:00+00:00" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="http://localhost:1313/articels/2023-09-29/feature.jpg" /><meta name="twitter:title" content="Java &amp; Go 线程模式对比"/>
+<meta name="twitter:description" content="本文旨在从源码角度阐述 Java 和 Go 中对线程/协程的管理、调度，ForkJoin模型等"/>
+
+  
+  <script type="application/ld+json">
+  [{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "articleSection": "文章",
+    "name": "Java \u0026 Go 线程模式对比",
+    "headline": "Java \u0026 Go 线程模式对比",
+    
+    "abstract": "本文旨在从源码角度阐述 Java 和 Go 中对线程\/协程的管理、调度，ForkJoin模型等",
+    "inLanguage": "en",
+    "url" : "http:\/\/localhost:1313\/articels\/2023-09-29\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Utkarsh Deoli"
+    },
+    "copyrightYear": "2023",
+    "dateCreated": "2023-09-29T00:00:00\u002b00:00",
+    "datePublished": "2023-09-29T00:00:00\u002b00:00",
+    
+    "dateModified": "2023-09-29T00:00:00\u002b00:00",
+    
+    "keywords": ["编程框架"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "3008"
+  }]
+  </script>
+
+
+  
+  
+  <meta name="author" content="Utkarsh Deoli" />
+  
+  
+  
+  <link href="mailto:utkarsh.deoli@gmail.com?subject=Contacting%20from%20your%20website" rel="me" />
+  
+  
+  <link href="https://github.com/UtkarshDeoli" rel="me" />
+  
+  
+  <link href="https://www.linkedin.com/in/utkarshdeoli" rel="me" />
+  
+  
+  <link href="https://x.com/utkarshdeoli" rel="me" />
+  
+  
+  <link href="https://www.youtube.com/@utkarshdeoli" rel="me" />
+  
+  
+  <link href="https://www.leetcode.com/sagemodeutkarsh" rel="me" />
+  
+  
+  
+  
+
+<script src="/lib/jquery/jquery.slim.min.js" integrity=""></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+  
+  
+  <meta name="theme-color"/>
+  
+  
+</head>
+<body
+  class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32">
+  <div id="the-top" class="absolute flex self-center">
+    <a class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+      href="#main-content"><span
+        class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400">&darr;</span>Skip to main content</a>
+  </div>
+  
+  
+  <div class="min-h-[148px]"></div>
+<div class="fixed inset-x-0 pl-[24px] pr-[24px]" style="z-index:100">
+  <div id="menu-blur" class="absolute opacity-0 inset-x-0 top-0 h-full single_hero_background nozoom bg-neutral dark:bg-neutral-800"></div>
+  <div class="relative max-w-[64rem] ml-auto mr-auto">
+    <div style="padding-left:0;padding-right:0;padding-top:2px;padding-bottom:3px"
+    class="main-menu flex items-center justify-between px-4 py-6 sm:px-6 md:justify-start space-x-3">
+    
+    
+    
+    <div>
+        <a href="/" class="flex">
+            <span class="sr-only">Utkarsh Deoli</span>
+
+            <img src="/nekonobg.png" width="250" height="250"
+                class="logo max-h-[5rem] max-w-[5rem] object-scale-down object-left nozoom" alt="Utkarsh Deoli" />
+
+        </a>
+    </div>
+    
+    <div class="flex flex-1 items-center justify-between">
+        <nav class="flex space-x-3">
+
+            
+            <a href="/" class="text-base font-medium text-gray-500 hover:text-gray-900">Utkarsh Deoli</a>
+            
+
+        </nav>
+        <nav class="hidden md:flex items-center space-x-5 md:ml-12 h-12">
+
+            
+            
+            
+  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        Projects
+    </p>
+</a>
+
+
+            
+            
+  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        Blog
+    </p>
+</a>
+
+
+            
+            
+  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        Contact
+    </p>
+</a>
+
+
+            
+            
+  <a href="https://firebasestorage.googleapis.com/v0/b/utkarsh-deoli-portfolio.appspot.com/o/UtkarshDeoliCV%20%281%29.pdf?alt=media&amp;token=dbb3a0de-4dd5-4f17-a410-c1ceee191f75"  target="_blank"  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        Resume
+    </p>
+</a>
+
+
+            
+            
+  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    
+    <p class="text-base font-medium" title="">
+        
+    </p>
+</a>
+
+
+            
+            
+
+            
+
+
+            
+
+
+            
+            
+            <div
+                class="ltr:mr-14 rtl:ml-14 flex items-center">
+                <button id="appearance-switcher" aria-label="Dark mode switcher" type="button" class="text-base hover:text-primary-600 dark:hover:text-primary-400">
+                    <div class="flex items-center justify-center dark:hidden">
+                        
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
+
+
+                    </div>
+                    <div class="items-center justify-center hidden dark:flex">
+                        
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
+
+
+                    </div>
+                </button>
+            </div>
+            
+
+        </nav>
+        <div class="flex md:hidden items-center space-x-5 md:ml-12 h-12">
+
+            <span></span>
+
+            
+
+
+            
+
+            
+            
+            <button id="appearance-switcher-mobile" aria-label="Dark mode switcher" type="button" class="text-base hover:text-primary-600 dark:hover:text-primary-400" style="margin-right:5px">
+                <div class="flex items-center justify-center dark:hidden">
+                    
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
+
+
+                </div>
+                <div class="items-center justify-center hidden dark:flex">
+                    
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
+
+
+                </div>
+            </button>
+            
+
+        </div>
+    </div>
+    <div class="-my-2 -mr-2 md:hidden">
+
+        <label id="menu-button" for="menu-controller" class="block">
+            <input type="checkbox" id="menu-controller" class="hidden" />
+            
+            <div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400">
+                
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"/></svg>
+
+  </span>
+
+
+            </div>
+            <div id="menu-wrapper" style="padding-top:5px;"
+                class="fixed inset-0 z-30 invisible w-screen h-screen m-0 overflow-auto transition-opacity opacity-0 cursor-default bg-neutral-100/50 backdrop-blur-sm dark:bg-neutral-900/50">
+                <ul
+                    class="flex space-y-2 mt-3 flex-col items-end w-full px-6 py-6 mx-auto overflow-visible list-none ltr:text-right rtl:text-left max-w-7xl">
+
+                    <li>
+                        <span
+                            class="cursor-pointer inline-block align-text-bottom hover:text-primary-600 dark:hover:text-primary-400">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"/></svg>
+
+  </span>
+
+</span>
+                    </li>
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            Projects
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            Blog
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            Contact
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href="https://firebasestorage.googleapis.com/v0/b/utkarsh-deoli-portfolio.appspot.com/o/UtkarshDeoliCV%20%281%29.pdf?alt=media&amp;token=dbb3a0de-4dd5-4f17-a410-c1ceee191f75"  target="_blank"  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            Resume
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                    
+  <li class="mt-1">
+    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+        
+        <p class="text-bg font-bg" title="">
+            
+        </p>
+    </a>
+</li>
+
+
+
+                    
+
+                </ul>
+                
+                
+
+            </div>
+        </label>
+    </div>
+</div>
+
+
+
+
+<script>
+    (function () {
+        var $mainmenu = $('.main-menu');
+        var path = window.location.pathname;
+        $mainmenu.find('a[href="' + path + '"]').each(function (i, e) {
+            $(e).children('p').addClass('active');
+        });
+    })();
+</script>
+
+
+  </div>
+</div>
+<script>
+  window.addEventListener('scroll', function (e) {
+    var scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    var background_blur = document.getElementById('menu-blur');
+    background_blur.style.opacity = (scroll / 300);
+  });
+</script>
+
+  
+  <div class="relative flex flex-col grow">
+    <main id="main-content" class="grow">
+      
+
+
+<article>
+  
+  
+  
+  
+  
+  
+
+
+<div id="hero" class="h-[150px] md:h-[200px]"></div>
+
+
+
+    
+    <div class="fixed inset-x-0 top-0 h-[800px] single_hero_background nozoom"
+    style="background-image:url(/articels/2023-09-29/feature_hue589e81f7ac68e6438ffb151de7ad22e_600951_1200x0_resize_q75_box.jpg);">
+    
+
+
+    <div class="absolute inset-0 bg-gradient-to-t from-neutral dark:from-neutral-800 to-transparent mix-blend-normal">
+    </div>
+    <div
+        class="absolute inset-0 opacity-60 bg-gradient-to-t from-neutral dark:from-neutral-800 to-neutral-100 dark:to-neutral-800 mix-blend-normal">
+    </div>
+</div>
+
+<div id="background-blur" class="fixed opacity-0 inset-x-0 top-0 h-full single_hero_background nozoom backdrop-blur-2xl"></div>
+<script>
+    window.addEventListener('scroll', function (e) {
+        var scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        var background_blur = document.getElementById('background-blur');
+        background_blur.style.opacity = (scroll / 300)
+    });
+</script>
+
+  
+  
+
+  <header id="single_header" class="mt-5 max-w-prose">
+    
+    <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+      Java & Go 线程模式对比
+    </h1>
+    <div class="mt-1 mb-6 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+      
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+<div class="flex flex-row flex-wrap items-center">
+  
+  
+  <time datetime="2023-09-29 00:00:00 &#43;0000 UTC">29 September 2023</time><span class="px-2 text-primary-500">&middot;</span><span>3008 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">15 mins</span><span class="px-2 text-primary-500">&middot;</span><span>
+  
+  
+    
+    
+      
+      
+        
+        
+      
+      
+    
+  
+  <span id="views_articels/2023-09-29/index.md" class="animate-pulse inline-block text-transparent max-h-3 rounded-full mt-[-2px] align-middle bg-neutral-300 dark:bg-neutral-400" title="views">loading</span>
+  <span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+<path fill="currentColor" d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg>
+  </span>
+
+</span>
+</span><span class="px-2 text-primary-500">&middot;</span><span>
+  
+  
+    
+    
+      
+      
+        
+        
+      
+      
+    
+  
+  <span id="likes_articels/2023-09-29/index.md"
+    class="animate-pulse inline-block text-transparent max-h-3 rounded-full mt-[-2px] align-middle bg-neutral-300 dark:bg-neutral-400"
+    title="likes">loading</span>
+  <span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path fill="currentColor" d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+  </span>
+
+</span>
+</span><span class="px-2 text-primary-500">&middot;</span><span>
+    <button id="button_likes"
+        class="rounded-md border border-primary-400 px-1 py-[1px] text-xs font-normal text-primary-700 dark:border-primary-600 dark:text-primary-400"
+        onclick="process_article()">
+        <span id="button_likes_heart" style="display:none" class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path fill="currentColor" d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+  </span>
+
+ </span>
+        <span id="button_likes_emtpty_heart" class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<path fill="currentColor" d="M244 84L255.1 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 0 232.4 0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84C243.1 84 244 84.01 244 84L244 84zM255.1 163.9L210.1 117.1C188.4 96.28 157.6 86.4 127.3 91.44C81.55 99.07 48 138.7 48 185.1V190.9C48 219.1 59.71 246.1 80.34 265.3L256 429.3L431.7 265.3C452.3 246.1 464 219.1 464 190.9V185.1C464 138.7 430.4 99.07 384.7 91.44C354.4 86.4 323.6 96.28 301.9 117.1L255.1 163.9z"/></svg>
+  </span>
+
+</span>
+        <span id="button_likes_text">&nbsp;Like</span>
+    </button>
+</span>
+  
+
+  
+  
+</div>
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+    
+    
+
+    
+
+    
+      
+      
+        
+        
+<div class="flex author">
+  
+    
+    
+      
+    
+    
+      
+        
+      
+      <img class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4" width="96" height="96"
+      alt="Utkarsh Deoli" src="/20131113_054558_hu3c0fbd01a0e6baca8802d02a563621ff_1368799_192x192_fill_q75_box_center.jpg" />
+    
+  
+  <div class="place-self-center">
+    
+    <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+      Author
+    </div>
+    <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+      Utkarsh Deoli
+    </div>
+    
+    
+    <div class="text-sm text-neutral-700 dark:text-neutral-400">Utkarsh Deoli -just a developer for fun</div>
+    
+    <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:utkarsh.deoli@gmail.com?subject=Contacting%20from%20your%20website"
+          target="_blank"
+          aria-label="Envelope"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/UtkarshDeoli"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/utkarshdeoli"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://x.com/utkarshdeoli"
+          target="_blank"
+          aria-label="X-Twitter"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.youtube.com/@utkarshdeoli"
+          target="_blank"
+          aria-label="Youtube"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>
+
+  </span>
+
+</span></a
+        >
+      
+    
+      
+        <a
+          class="px-1 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.leetcode.com/sagemodeutkarsh"
+          target="_blank"
+          aria-label="Code"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+<path fill="currentColor"  d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/></svg>
+  </span>
+
+</span></a
+        >
+      
+    
+  </div>
+
+</div>
+  </div>
+</div>
+
+      
+
+      
+
+      
+      <div class="mb-5"></div>
+      
+
+    
+
+  </header>
+  
+  <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+    
+    
+
+      <div class="min-w-0 min-h-0 max-w-fit">
+        
+        
+
+
+        <div class="article-content max-w-prose mb-20">
+          
+
+<h2 class="relative group">引言 
+    <div id="%E5%BC%95%E8%A8%80" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%BC%95%E8%A8%80" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>Java 中的 CPU 资源分配对象是 Thread，Go 中的 CPU 资源分配对象是 goroutine。Java Thread 与操作系统的线程是一一对应的关系；goroutine 是 Go实现的用户轻量级线程，通过 GPM 进行管理，与操作系统是 n:m 的关系。</p>
+<p>本文旨在通过剖析源码，研究 Java 和 Go 中的线程模型具体的实现和设计思想。</p>
+
+
+<h2 class="relative group">Java Thread 
+    <div id="java-thread" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#java-thread" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+
+
+<h3 class="relative group">Hotspot JavaThread 
+    <div id="hotspot-javathread" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#hotspot-javathread" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>在 Hotspot VM 中，Java 中的<code>java.lang.Thread</code> 和操作系统 Thread 是 <strong>1:1</strong> 的关系，Java 线程会在 start 的时候创建对应的操作系统线程，在Java线程终止的时候回收操作系统线程。</p>
+<p>Hotspot 中对与 thread 相关的代码在 <code>jdk/src/hotspot/share/runtime</code> 中，Java11 的JavaThread 是定义在 <code>thread.hpp</code> 和 <code>thread.cpp</code> 中，源码可以看 <em><a href="https://github.com/openjdk/jdk/tree/jdk-11&#43;28/src/hotspot/share/runtime"   target="_blank">
+    jdk-11+28 hotspot runtime</a></em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// Class hierarchy
+</span></span></span><span class="line"><span class="cl"><span class="c1">// - Thread
+</span></span></span><span class="line"><span class="cl"><span class="c1">//   - NamedThread
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     - VMThread
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     - ConcurrentGCThread
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     - WorkerThread
+</span></span></span><span class="line"><span class="cl"><span class="c1">//       - GangWorker
+</span></span></span><span class="line"><span class="cl"><span class="c1">//       - GCTaskThread
+</span></span></span><span class="line"><span class="cl"><span class="c1">//   - JavaThread
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     - various subclasses eg CompilerThread, ServiceThread
+</span></span></span><span class="line"><span class="cl"><span class="c1">//   - WatcherThread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Thread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">class</span> <span class="nc">Thread</span><span class="o">:</span> <span class="k">public</span> <span class="n">ThreadShadow</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">friend</span> <span class="k">class</span> <span class="nc">VMStructs</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">friend</span> <span class="k">class</span> <span class="nc">JVMCIVMStructs</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">GCThreadLocalData</span> <span class="n">_gc_data</span><span class="p">;</span> <span class="c1">// GC 中的 ThreadLocal 数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="k">protected</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span><span class="o">*</span>       <span class="n">_real_malloc_address</span><span class="p">;</span> <span class="c1">// 真实分配地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="k">protected</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">OSThread</span><span class="o">*</span> <span class="n">_osthread</span><span class="p">;</span> <span class="c1">// 和 Thread 关联的 os Thread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// JavaThread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">class</span> <span class="nc">JavaThread</span><span class="o">:</span> <span class="k">public</span> <span class="n">Thread</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">friend</span> <span class="k">class</span> <span class="nc">VMStructs</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">friend</span> <span class="k">class</span> <span class="nc">JVMCIVMStructs</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">friend</span> <span class="k">class</span> <span class="nc">WhiteBox</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">JavaThread</span><span class="o">*</span>    <span class="n">_next</span><span class="p">;</span>            <span class="c1">// Threads列表中的下一个 thread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span>           <span class="n">_on_thread_list</span><span class="p">;</span>  <span class="c1">// 当前 JavaThread 是否在Thread列表中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">oop</span>            <span class="n">_threadObj</span><span class="p">;</span>       <span class="c1">// Java级别的线程对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">JavaThread</span><span class="o">::</span><span class="n">JavaThread</span><span class="p">(</span><span class="kt">bool</span> <span class="n">is_attaching_via_jni</span><span class="p">)</span> <span class="o">:</span>
+</span></span><span class="line"><span class="cl">                       <span class="n">Thread</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">initialize</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">is_attaching_via_jni</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_jni_attach_state</span> <span class="o">=</span> <span class="n">_attaching_via_jni</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_jni_attach_state</span> <span class="o">=</span> <span class="n">_not_attaching_via_jni</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="n">deferred_card_mark</span><span class="p">().</span><span class="n">is_empty</span><span class="p">(),</span> <span class="s">&#34;Default MemRegion ctor&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Java11 的 Hotspot 中，会有一个父类 Thread，Thread 中定义 <code>_osThread</code> 用于关联操作系统线程，针对不同父类会有以下子类实现 ( <a href="https://openjdk.org/groups/hotspot/docs/RuntimeOverview.html#Thread%20Management%7Coutline"   target="_blank">
+    HotSpot Runtime Overview #Thread Management</a> )：</p>
+<ul>
+<li>NamedThread：具有名字的、代表唯一命名实例的线程，定义了 <code>_name</code> 表示线程名
+<ul>
+<li>VMThread：负责执行 VM 操作的线程，如 <em>scavenge</em>, <em>garbage_collect</em> 等</li>
+<li>ConcurrentGCThread：负责并发执行垃圾回收的线程</li>
+<li>WorkerThread：指代具有分配工作ID的工作线程，<code>_id</code> 作为具体的工作ID
+<ul>
+<li>GangWorker：字面理解是帮派工作线程</li>
+<li>GCTaskThread：负责GC任务的工作线程</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>JavaThread：对应 <code>java.lang.Thread</code>
+<ul>
+<li>CompilerThread：负责运行时，将编译后的字节码转换成机器码 (native thread) 的线程</li>
+<li>ServiceThread：用于低内存检测和JVMTI (虚拟机提供的native接口)</li>
+</ul>
+</li>
+<li>WatcherThread：负责模拟时钟中断 (simulate timer interrupts)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// Constructor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">JavaThread</span><span class="p">();</span>                            <span class="c1">// delegating constructor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">JavaThread</span><span class="p">(</span><span class="kt">bool</span> <span class="n">is_attaching_via_jni</span><span class="p">);</span>   <span class="c1">// for main thread and JNI attached threads
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">JavaThread</span><span class="p">(</span><span class="n">ThreadFunction</span> <span class="n">entry_point</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">stack_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">~</span><span class="n">JavaThread</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">JavaThread</span><span class="o">::</span><span class="n">JavaThread</span><span class="p">(</span><span class="kt">bool</span> <span class="n">is_attaching_via_jni</span><span class="p">)</span> <span class="o">:</span>
+</span></span><span class="line"><span class="cl">                       <span class="n">Thread</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">initialize</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">is_attaching_via_jni</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_jni_attach_state</span> <span class="o">=</span> <span class="n">_attaching_via_jni</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_jni_attach_state</span> <span class="o">=</span> <span class="n">_not_attaching_via_jni</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="n">deferred_card_mark</span><span class="p">().</span><span class="n">is_empty</span><span class="p">(),</span> <span class="s">&#34;Default MemRegion ctor&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">JavaThread</span><span class="o">::</span><span class="n">JavaThread</span><span class="p">(</span><span class="n">ThreadFunction</span> <span class="n">entry_point</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">stack_sz</span><span class="p">)</span> <span class="o">:</span>
+</span></span><span class="line"><span class="cl">                       <span class="n">Thread</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">initialize</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">_jni_attach_state</span> <span class="o">=</span> <span class="n">_not_attaching_via_jni</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">set_entry_point</span><span class="p">(</span><span class="n">entry_point</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// Create the native thread itself.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// %note runtime_23
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">os</span><span class="o">::</span><span class="n">ThreadType</span> <span class="n">thr_type</span> <span class="o">=</span> <span class="n">os</span><span class="o">::</span><span class="n">java_thread</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">thr_type</span> <span class="o">=</span> <span class="n">entry_point</span> <span class="o">==</span> <span class="o">&amp;</span><span class="n">compiler_thread_entry</span> <span class="o">?</span> <span class="n">os</span><span class="o">::</span><span class="nl">compiler_thread</span> <span class="p">:</span>
+</span></span><span class="line"><span class="cl">                                                     <span class="n">os</span><span class="o">::</span><span class="n">java_thread</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">os</span><span class="o">::</span><span class="n">create_thread</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">thr_type</span><span class="p">,</span> <span class="n">stack_sz</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>具体看 JavaThread 的 Constructor，我们可以看到它有两种构造方式，其中 <code>JavaThread(bool is_attaching_via_jni)</code> 仅用于主线程和JNI的连接。故我们所使用的用户线程构造方法是 <code>JavaThread(ThreadFunction entry_point, size_t stack_size = 0)</code> ，这里对 <code>_osthread</code> 进行了创建和绑定，这也决定了在 Hotspot 虚拟机中，Java Thread 与 操作系统线程是一一对应的关系。</p>
+
+
+<h3 class="relative group">Thread JNI 
+    <div id="thread-jni" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#thread-jni" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>Hotstop 虚拟机中用c++定义了 JavaThread， 对应 JDK 中的 java 定义的 Thread 类，从java调用C++ 使用的是JNI (<em>Java Native Interface</em>)。那么JNI是如何将这两处代码连接起来的？</p>
+<p>下面通过源码看看，从创建Java中的Thread对象，到创建VM 中的 JavaThread 是怎样的过程</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Thread</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">Runnable</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">public</span><span class="w"> </span><span class="kd">synchronized</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">start</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">threadStatus</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IllegalThreadStateException</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">group</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">boolean</span><span class="w"> </span><span class="n">started</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		    </span><span class="c1">// native 方法 创建 </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">start0</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">started</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">started</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">group</span><span class="p">.</span><span class="na">threadStartFailed</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Throwable</span><span class="w"> </span><span class="n">ignore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">private</span><span class="w"> </span><span class="kd">native</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">start0</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>这部分可以看到，在<code>Thread.start()</code> 方法中，会调用 <code>start0()</code> 的native方法去创建一个操作系统线程。换句话说，只是 <code>new Thread()</code>仅仅是在 Java程序中创建了thread对象，并没有对应的系统资源，只有调用了<code>start</code>方法后才会在虚拟机中创建对应的资源。JDK在<code>jdk/src/java.base/share/native/libjava/Thread.c</code> 中定义了Java中native方法所对应vm 中的 function。</p>
+<p>需要注意的是 JNI 的定义是在JDK中用c实现的，但是并未在虚拟机的源码中，这意味着如果不使用Hotspot虚拟机，我只需要在 openjdk 的基础上，在新的虚拟机中实现 JVM_StartThread 方法就行</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="n">JNINativeMethod</span> <span class="n">methods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;start0&#34;</span><span class="p">,</span>           <span class="s">&#34;()V&#34;</span><span class="p">,</span>        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_StartThread</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;stop0&#34;</span><span class="p">,</span>            <span class="s">&#34;(&#34;</span> <span class="n">OBJ</span> <span class="s">&#34;)V&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_StopThread</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;isAlive&#34;</span><span class="p">,</span>          <span class="s">&#34;()Z&#34;</span><span class="p">,</span>        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_IsThreadAlive</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;suspend0&#34;</span><span class="p">,</span>         <span class="s">&#34;()V&#34;</span><span class="p">,</span>        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_SuspendThread</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;resume0&#34;</span><span class="p">,</span>          <span class="s">&#34;()V&#34;</span><span class="p">,</span>        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_ResumeThread</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;setPriority0&#34;</span><span class="p">,</span>     <span class="s">&#34;(I)V&#34;</span><span class="p">,</span>       <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_SetThreadPriority</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;yield&#34;</span><span class="p">,</span>            <span class="s">&#34;()V&#34;</span><span class="p">,</span>        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_Yield</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;sleep&#34;</span><span class="p">,</span>            <span class="s">&#34;(J)V&#34;</span><span class="p">,</span>       <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_Sleep</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;currentThread&#34;</span><span class="p">,</span>    <span class="s">&#34;()&#34;</span> <span class="n">THD</span><span class="p">,</span>     <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_CurrentThread</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;countStackFrames&#34;</span><span class="p">,</span> <span class="s">&#34;()I&#34;</span><span class="p">,</span>        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_CountStackFrames</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;interrupt0&#34;</span><span class="p">,</span>       <span class="s">&#34;()V&#34;</span><span class="p">,</span>        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_Interrupt</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;isInterrupted&#34;</span><span class="p">,</span>    <span class="s">&#34;(Z)Z&#34;</span><span class="p">,</span>       <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_IsInterrupted</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;holdsLock&#34;</span><span class="p">,</span>        <span class="s">&#34;(&#34;</span> <span class="n">OBJ</span> <span class="s">&#34;)Z&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_HoldsLock</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;getThreads&#34;</span><span class="p">,</span>        <span class="s">&#34;()[&#34;</span> <span class="n">THD</span><span class="p">,</span>   <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_GetAllThreads</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;dumpThreads&#34;</span><span class="p">,</span>      <span class="s">&#34;([&#34;</span> <span class="n">THD</span> <span class="s">&#34;)[[&#34;</span> <span class="n">STE</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_DumpThreads</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s">&#34;setNativeName&#34;</span><span class="p">,</span>    <span class="s">&#34;(&#34;</span> <span class="n">STR</span> <span class="s">&#34;)V&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">JVM_SetNativeThreadName</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>那么 Hotstop 虚拟机 中又是如何实现 JVM_StartThread 的，这里我们需要看 <code>jdk/src/hotspot/share/prims/jvm.cpp</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">JVM_ENTRY</span><span class="p">(</span><span class="kt">void</span><span class="p">,</span> <span class="n">JVM_StartThread</span><span class="p">(</span><span class="n">JNIEnv</span><span class="o">*</span> <span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">jthread</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="n">JVMWrapper</span><span class="p">(</span><span class="s">&#34;JVM_StartThread&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">JavaThread</span> <span class="o">*</span><span class="n">native_thread</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">throw_illegal_thread_state</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// We must release the Threads_lock before we can post a jvmti event
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// in Thread::start.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">MutexLocker</span> <span class="nf">mu</span><span class="p">(</span><span class="n">Threads_lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">java_lang_Thread</span><span class="o">::</span><span class="kr">thread</span><span class="p">(</span><span class="n">JNIHandles</span><span class="o">::</span><span class="n">resolve_non_null</span><span class="p">(</span><span class="n">jthread</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">throw_illegal_thread_state</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">jlong</span> <span class="n">size</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">             <span class="n">java_lang_Thread</span><span class="o">::</span><span class="n">stackSize</span><span class="p">(</span><span class="n">JNIHandles</span><span class="o">::</span><span class="n">resolve_non_null</span><span class="p">(</span><span class="n">jthread</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">      <span class="n">NOT_LP64</span><span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">SIZE_MAX</span><span class="p">)</span> <span class="n">size</span> <span class="o">=</span> <span class="n">SIZE_MAX</span><span class="p">;)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">size_t</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="p">(</span><span class="n">size_t</span><span class="p">)</span> <span class="nl">size</span> <span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			<span class="c1">// 创建 Hotstop 中的 JavaThread，同时创建对应的 _osthread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">native_thread</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JavaThread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">thread_entry</span><span class="p">,</span> <span class="n">sz</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">native_thread</span><span class="o">-&gt;</span><span class="n">osthread</span><span class="p">()</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Note: the current thread is not being used within &#34;prepare&#34;.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">native_thread</span><span class="o">-&gt;</span><span class="n">prepare</span><span class="p">(</span><span class="n">jthread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">throw_illegal_thread_state</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">THROW</span><span class="p">(</span><span class="n">vmSymbols</span><span class="o">::</span><span class="n">java_lang_IllegalThreadStateException</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="n">native_thread</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">,</span> <span class="s">&#34;Starting null thread?&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">native_thread</span><span class="o">-&gt;</span><span class="n">osthread</span><span class="p">()</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">native_thread</span><span class="o">-&gt;</span><span class="n">smr_delete</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">JvmtiExport</span><span class="o">::</span><span class="n">should_post_resource_exhausted</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">JvmtiExport</span><span class="o">::</span><span class="n">post_resource_exhausted</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JVMTI_RESOURCE_EXHAUSTED_OOM_ERROR</span> <span class="o">|</span> <span class="n">JVMTI_RESOURCE_EXHAUSTED_THREADS</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">os</span><span class="o">::</span><span class="n">native_thread_creation_failed_msg</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">THROW_MSG</span><span class="p">(</span><span class="n">vmSymbols</span><span class="o">::</span><span class="n">java_lang_OutOfMemoryError</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">              <span class="n">os</span><span class="o">::</span><span class="n">native_thread_creation_failed_msg</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 开始执行，执行 os::start_thread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">Thread</span><span class="o">::</span><span class="n">start</span><span class="p">(</span><span class="n">native_thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">JVM_END</span>
+</span></span></code></pre></div><p>我们总结一下上面的链路</p>
+<p><code>Thread::start() →</code></p>
+<p><code>native start0() → JNI JNINativeMethod →</code></p>
+<p><code>JVM_StartThread → Hotstop JavaThread → osthread</code></p>
+
+
+<h3 class="relative group">线程状态  JMVTI Thread State 
+    <div id="%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81--jmvti-thread-state" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81--jmvti-thread-state" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>JDK中的 Thread.class 和 c++ 代码中的 JavaThread 是一一对应的，线程具体的执行、流转等也是在虚拟机处理的，所以线程状态 (<em>thread status</em>) 在 Hotstop 虚拟机也需要有对应的地方，即JMVTI Thread State，对应的源码是 <code>jvmtiThreadState.hpp</code></p>
+<ul>
+<li>NEW  → JVMTI_THREAD_STATE_ALIVE : <code>0x0001</code></li>
+<li>RUNNABLE → JVMTI_THREAD_STATE_RUNNABLE : <code>0x0004</code></li>
+<li>BLOCKED → JVMTI_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER : <code>0x0400</code></li>
+<li>WAITING → JVMTI_THREAD_STATE_WAITING_INDEFINITELY : <code>0x0010</code></li>
+<li>TIMED_WAITING → JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT : <code>0x0020</code></li>
+<li>TERMINATED → JVMTI_THREAD_STATE_TERMINATED : <code>0x0002</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Thread</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">Runnable</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Java thread status for tools, default indicates thread &#39;not yet started&#39;
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">threadStatus</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">public</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="n">State</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="c1">// Thread state for a thread which has not yet started.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">NEW</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// Thread state for a runnable thread.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">RUNNABLE</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// Thread state for a thread blocked waiting for a monitor lock.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">BLOCKED</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// Thread state for a waiting thread.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">WAITING</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// Thread state for a waiting thread with a specified waiting time.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TIMED_WAITING</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// The thread has completed execution.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TERMINATED</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">VM</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="cm">/* The threadStatus field is set by the VM at state transition
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * in the hotspot implementation. Its value is set according to
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * the JVM TI specification GetThreadState function.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_ALIVE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0x0001</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_TERMINATED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0x0002</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_RUNNABLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0x0004</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0x0400</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_WAITING_INDEFINITELY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0x0010</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0x0020</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Thread</span><span class="p">.</span><span class="na">State</span><span class="w"> </span><span class="nf">toThreadState</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">threadStatus</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">threadStatus</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_RUNNABLE</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">RUNNABLE</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">threadStatus</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">BLOCKED</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">threadStatus</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_WAITING_INDEFINITELY</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">WAITING</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">threadStatus</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">TIMED_WAITING</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">threadStatus</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_TERMINATED</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">TERMINATED</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">threadStatus</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">JVMTI_THREAD_STATE_ALIVE</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">NEW</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">RUNNABLE</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>
+
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" loading="lazy" src="Java%20Thread%20%E7%8A%B6%E6%80%81%E5%88%87%E6%8D%A2.png" alt="Java Thread 状态切换.png" />
+      
+    </figure>
+  
+
+</p>
+
+
+<h3 class="relative group">线程池 
+    <div id="%E7%BA%BF%E7%A8%8B%E6%B1%A0" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+
+
+<h4 class="relative group">ThreadPoolExecutor 
+    <div id="threadpoolexecutor" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#threadpoolexecutor" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>Java官方库在 JDK 中提供线程池 <em><strong>ThreadPoolExecutor</strong></em>，用于线程复用和线程管理。关于 <em><strong>ThreadPoolExecutor</strong></em> 已经有很多优秀的文章介绍了，这里仅仅强调几个比较重要的参数和线程池的执行流程</p>
+<p>ThreadPoolExecutor 线程池创建时有以下3个比较重要的参数：</p>
+<ul>
+<li><strong>corePoolSize</strong>：核心线程池数，指的是最小保持活跃线程的数量</li>
+<li><strong>maximumPoolSize</strong>：线程池允许创建的最大线程数量，当线程池的任务队列满了之后，可以创建的最大线程数</li>
+<li><strong>workQueue</strong>：线程池存放任务的队列，用来存储线程池的所有待执行任务</li>
+</ul>
+<p>同时还有一些内部参数至关重要：</p>
+<ul>
+<li><strong>AtomicInteger ctl</strong>：主控制参数，记录了线程池的状态和工作线程数量。ctl是一个32位的二进制(包含符号位)，去掉符号位有31位，线程池中使用后29位来表示工作线程数，最多可以计数5亿个；用前3位 (包含符号位) 表示线程池的状态。对 ctl 的修改通过 CAS + volatile 保证其线程一致性.</li>
+<li><strong>HashSet<Worker> workers</strong>：正在运行的工作线程，必须在获取到 mainLock 时才能访问，数量和 ctl 中存储的数量是相同的</li>
+<li><strong>ReentrantLock mainLock</strong>：用于线程池的锁，对线程池中的 workers 进行访问时，需要先获得此锁，注意这是一个非公平锁</li>
+</ul>
+<p>线程池的的执行流程如下：</p>
+<ol>
+<li>如果当前的工作线程数小于核心线程池数 <strong>corePoolSize</strong>，则尝试创建工作线程并执行任务。如果成功则返回；否则进入2</li>
+<li>尝试将任务添加至等待队列 <strong>workQueue</strong>，添加成功则二次检查 (从第1步检查后可能有死亡的)，如果二次检查发现没有正在运行的线程，则创建工作线程并执行；否则进入3</li>
+<li>添加队列失败，尝试直接创建工作线程，如果当前运行的线程数量未超过<strong>maximumPoolSize</strong>，则创建工作线程并执行；否则执行拒绝策略 <strong>handler</strong></li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ThreadPoolExecutor</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">AbstractExecutorService</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">AtomicInteger</span><span class="w"> </span><span class="n">ctl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtomicInteger</span><span class="p">(</span><span class="n">ctlOf</span><span class="p">(</span><span class="n">RUNNING</span><span class="p">,</span><span class="w"> </span><span class="n">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ReentrantLock</span><span class="w"> </span><span class="n">mainLock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ReentrantLock</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">HashSet</span><span class="o">&lt;</span><span class="n">Worker</span><span class="o">&gt;</span><span class="w"> </span><span class="n">workers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashSet</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">corePoolSize</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">maximumPoolSize</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">BlockingQueue</span><span class="o">&lt;</span><span class="n">Runnable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">workQueue</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">keepAliveTime</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="n">ThreadFactory</span><span class="w"> </span><span class="n">threadFactory</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="n">RejectedExecutionHandler</span><span class="w"> </span><span class="n">handler</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">COUNT_BITS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Integer</span><span class="p">.</span><span class="na">SIZE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">3</span><span class="p">;</span><span class="w">      </span><span class="c1">// 29</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 11111...111   2 ^ 29 - 1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">COUNT_MASK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">COUNT_BITS</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 线程池自身的状态 state</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">RUNNING</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">COUNT_BITS</span><span class="p">;</span><span class="w">    </span><span class="c1">// 101</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">SHUTDOWN</span><span class="w">   </span><span class="o">=</span><span class="w">  </span><span class="n">0</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">COUNT_BITS</span><span class="p">;</span><span class="w">    </span><span class="c1">// 000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">STOP</span><span class="w">       </span><span class="o">=</span><span class="w">  </span><span class="n">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">COUNT_BITS</span><span class="p">;</span><span class="w">    </span><span class="c1">// 001</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">TIDYING</span><span class="w">    </span><span class="o">=</span><span class="w">  </span><span class="n">2</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">COUNT_BITS</span><span class="p">;</span><span class="w">    </span><span class="c1">// 010</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">TERMINATED</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">3</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">COUNT_BITS</span><span class="p">;</span><span class="w">    </span><span class="c1">// 011</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 去掉前3位状态，获取工作线程数量</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">workerCountOf</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">COUNT_MASK</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// rs-state (RUNNING/SHUTDOWN/STOP/TIDYING/TERMINATED)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 如果wc=0，则此方法返回线程池state；如果w=workerCountOf(c)，则此方法返回 ctl 真实值</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">ctlOf</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">rs</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">wc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rs</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">wc</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="n">Runnable</span><span class="w"> </span><span class="n">command</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">command</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NullPointerException</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * Proceed in 3 steps:
+</span></span></span><span class="line"><span class="cl"><span class="cm">         *
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * 1. If fewer than corePoolSize threads are running, try to
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * start a new thread with the given command as its first
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * task.  The call to addWorker atomically checks runState and
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * workerCount, and so prevents false alarms that would add
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * threads when it shouldn&#39;t, by returning false.
+</span></span></span><span class="line"><span class="cl"><span class="cm">         *
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * 2. If a task can be successfully queued, then we still need
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * to double-check whether we should have added a thread
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * (because existing ones died since last checking) or that
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * the pool shut down since entry into this method. So we
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * recheck state and if necessary roll back the enqueuing if
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * stopped, or start a new thread if there are none.
+</span></span></span><span class="line"><span class="cl"><span class="cm">         *
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * 3. If we cannot queue task, then we try to add a new
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * thread.  If it fails, we know we are shut down or saturated
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * and so reject the task.
+</span></span></span><span class="line"><span class="cl"><span class="cm">         */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctl</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">workerCountOf</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">corePoolSize</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">addWorker</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctl</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isRunning</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">workQueue</span><span class="p">.</span><span class="na">offer</span><span class="p">(</span><span class="n">command</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">recheck</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctl</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="w"> </span><span class="n">isRunning</span><span class="p">(</span><span class="n">recheck</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">remove</span><span class="p">(</span><span class="n">command</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">reject</span><span class="p">(</span><span class="n">command</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">workerCountOf</span><span class="p">(</span><span class="n">recheck</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">addWorker</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">addWorker</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">reject</span><span class="p">(</span><span class="n">command</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>
+
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" loading="lazy" src="ThreadPoolExecutor%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B.png" alt="ThreadPoolExecutor运行流程.png" />
+      
+    </figure>
+  
+
+</p>
+<p>其他的更详细的内容，可以参考这两篇文章</p>
+<p><a href="https://pdai.tech/md/java/thread/java-thread-x-juc-executor-ThreadPoolExecutor.html"   target="_blank">
+    JUC线程池: ThreadPoolExecutor详解</a></p>
+<p><a href="https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html"   target="_blank">
+    Java线程池实现原理及其在美团业务中的实践</a></p>
+
+
+<h4 class="relative group">ForkJoinPool 
+    <div id="forkjoinpool" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#forkjoinpool" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p><em><strong>ForkJoinPool</strong></em> 是 JDK 1.7 之后官方库提供的另一种线程池，是一种基于 Fork/Join 框架的线程池，在JDK1.7之后的版本提供。<em><strong>ForkJoinPool</strong></em> 主要采用了两种思想 ( <a href="https://gee.cs.oswego.edu/dl/papers/fj.pdf"   target="_blank">
+    A Java Fork/Join Framework</a>) ：</p>
+<ul>
+<li>分治算法 (<strong><strong>Divide-and-Conquer</strong></strong>)：把任务递归拆分为各个子任务，例如将一个规模为N的任务分解(Fork)为K个规模较小的子任务，这些子任务之间相互独立且与原问题性质相同。等待子任务完成后，收集他们的结果合并 (Join)。</li>
+<li>工作窃取算法 (<strong><strong>Work-Stealing</strong></strong>)：指一个工作线程没有本地任务要运行时，尝试从另一个工作线程中“偷”一个任务，比如一个工作线程使用先进后出的方式执行子任务，另一个空闲的工作线程通过先进先出的方式”偷”任务。</li>
+</ul>
+<p>结合 <em><strong>ForkJoinPool</strong></em> 大概可以理解成</p>
+<ol>
+<li>用户往 ForkJoinPool 中添加的 Runnable 或 Callable 务并不一定会创建一个对应的 ForkJoinWorkerThread (和Thread一一对应)， 而是被作为一个 ForkJoinTask 子任务，等待空闲或者新建的ForkJoinWorkerThread来执行。</li>
+<li>ForkJoinPool 和 ForkJoinWorkerThread 各自维护一个 workQueue
+<ul>
+<li>ForkJoinPool 中的 workQueue， 奇数位是存储的是 ForkJoinWorkerThread，偶数位存放的是 ForkJoinTask[] 数组</li>
+<li>ForkJoinWorkerThread 中的 workQueue 中主要存放的是当前工作线程需要执行的子任务，即ForkJoinTask[] 数组</li>
+</ul>
+</li>
+<li>ForkJoinWorkerThread 在执行的过程中会调用 ForkJoinPool 提供的 <code>runWork()</code> 方法，不断通过 <code>scan()</code> 扫描 workQueue ，如果有空闲线程或工作线程过少则会尝试 steal，将 ForkJoinTask 交给别的 Thread 执行</li>
+</ol>
+<p>基于此，ForkJoinPool执行的流程图如下：</p>
+<p>
+
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" loading="lazy" src="ForkJoinPool%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B.png" alt="ForkJoinPool 运行流程.png" />
+      
+    </figure>
+  
+
+</p>
+<p>至于其他参数和具体的方法等，建议阅读下面这篇文章，讲得很详细</p>
+<p><a href="https://pdai.tech/md/java/thread/java-thread-x-juc-executor-ForkJoinPool.html"   target="_blank">
+    JUC线程池: Fork/Join框架详解</a></p>
+
+
+<h3 class="relative group">Virtual Thread 
+    <div id="virtual-thread" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#virtual-thread" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>OPENJDK19 首次出现了 Virtual Threads 的概念，即虚拟线程。根据描述，虚拟线程是一个轻量级的线程。在 Hotstop 虚拟机层面，它的实现还是基于 JavaThread，仅是添加了一个对象指针<code>_vthread</code>来代表 Virtual Threads。( <a href="https://openjdk.org/jeps/425"   target="_blank">
+    JEP 425: Virtual Threads (Preview)</a>, <a href="https://openjdk.org/jeps/436"   target="_blank">
+    JEP 436: Virtual Threads (Second Preview)</a>, <a href="https://openjdk.org/jeps/444"   target="_blank">
+    JEP 444: Virtual Threads</a> )</p>
+<p>那么 Java 中已经这些线程池，为什么还需要  Virtual Threads ？</p>
+<p>虽说基于线程共享的 ForkJoinPool 已经提高了任务执行的吞吐量，但是相比于 <em><strong>thread-per-request</strong></em> 模式还是有一些缺陷。<em><strong>thread-per-request</strong></em> 旨在一个请求关联一个线程，从而让代码更容易理解、调试和维护，线程共享会使之复杂化。 Virtual Threads 的目标就是于此，带来更清晰的代码执行和更容易理解的线程结构。</p>
+<p>虚拟线程是作为守护线程运行的，且被普通线程 Thread 来调度。这里不展开讲了，具体大家可以看 OPENJDK 的官方 JEP。</p>
+<p><a href="https://foojay.io/today/thinking-about-massive-throughput-meet-virtual-threads/"   target="_blank">
+    Thinking About Massive Throughput? Meet Virtual Threads!</a></p>
+
+
+<h2 class="relative group">Golang Goroutine 
+    <div id="golang-goroutine" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#golang-goroutine" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>相较于每个 os 现成固定分配 2M 的内存，goroutine 的栈采用了动态扩容，初始时进位2KB，随着任务执行按需增长，32位机器最大可达到256M，64位机器最大可达到1G；此外 GO 还会周期性回收不再使用的内存收缩栈空间。</p>
+<p>下面我们具体展开讲讲 GPM 这套执行 Goroutine 的调度模型。</p>
+<blockquote>
+<p>✨ 整理这部分内容的时候，发现有很多优秀的文章介绍得很清楚，在本文中不会特别详细地展开源码，这里推荐两篇文章</p>
+</blockquote>
+<p><a href="https://cloud.tencent.com/developer/article/2176651"   target="_blank">
+    深入分析Go1.18 GMP调度器底层原理-腾讯云开发者社区-腾讯云</a></p>
+<p><a href="https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/"   target="_blank">
+    Go 语言调度器与 Goroutine 实现原理</a></p>
+
+
+<h3 class="relative group">GPM 
+    <div id="gpm" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#gpm" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>GPM 运行时调度器中有三个重要的组成部分</p>
+<ul>
+<li>G：goroutine，代表一个待执行的任务，可以类比 runnable</li>
+<li>M：表示操作系统线程即 OS Thread，由操作系统的调度器进行调度和管理</li>
+<li>P：处理器，表示运行在线程上的本地调度器</li>
+</ul>
+<p>具体的数据结构定义，在源码中 <a href="https://github.com/golang/go/blob/master/src/runtime/runtime2.go"   target="_blank">
+    go/src/runtime/runtime2.go</a> 路径下，下面仅列出部分参数：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">allm</span>       <span class="o">*</span><span class="nx">m</span>            <span class="c1">// m
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">gomaxprocs</span> <span class="kt">int32</span>         <span class="c1">// p 最大数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">ncpu</span>       <span class="kt">int32</span>         <span class="c1">// cpu 数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">forcegc</span>    <span class="nx">forcegcstate</span>  <span class="c1">// 强制 GC
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">sched</span>      <span class="nx">schedt</span>        <span class="c1">// 全局调度器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">allp</span> <span class="p">[]</span><span class="o">*</span><span class="nx">p</span>                <span class="c1">// p
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">allpLock</span> <span class="nx">mutex</span>           <span class="c1">// 读写 allp 时用的锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">idlepMask</span> <span class="nx">pMask</span>          <span class="c1">// 空闲 p，每个 p 对应 pMask 中的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">timerpMask</span> <span class="nx">pMask</span>         <span class="c1">// 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">g</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">stack</span>       <span class="nx">stack</span>   <span class="c1">// goroutine 栈内存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">_panic</span>    <span class="o">*</span><span class="nx">_panic</span> <span class="c1">// goroutine 内部 panic
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">_defer</span>    <span class="o">*</span><span class="nx">_defer</span> <span class="c1">// goroutine 内部 defer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">m</span>         <span class="o">*</span><span class="nx">m</span>      <span class="c1">// 当前 g 使用的 m
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">sched</span>     <span class="nx">gobuf</span>   <span class="c1">// goroutine 调度数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">param</span>        <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span>  <span class="c1">// param 是用于传递的通用指针参数字段
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">atomicstatus</span> <span class="nx">atomic</span><span class="p">.</span><span class="nx">Uint32</span> <span class="c1">// goroutine 状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">goid</span>         <span class="kt">uint64</span>        <span class="c1">// goroutine ID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">waitsince</span>    <span class="kt">int64</span>      <span class="c1">// goroutine 阻塞时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">preempt</span>       <span class="kt">bool</span> <span class="c1">// 抢占信号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">m</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">g0</span>      <span class="o">*</span><span class="nx">g</span>     <span class="c1">// goroutine 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">morebuf</span> <span class="nx">gobuf</span>  <span class="c1">// gobuf arg to morestack
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">tls</span>           <span class="p">[</span><span class="nx">tlsSlots</span><span class="p">]</span><span class="kt">uintptr</span> <span class="c1">// thread-local 线程本地存储
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">curg</span>          <span class="o">*</span><span class="nx">g</span> <span class="c1">// 正在执行的 g
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">p</span>             <span class="nx">puintptr</span> <span class="c1">// 用于执行 go 代码的 p
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">nextp</span>         <span class="nx">puintptr</span> 
+</span></span><span class="line"><span class="cl">	<span class="nx">oldp</span>          <span class="nx">puintptr</span> <span class="c1">// 在执行 syscall 之前的 p
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">mstartfn</span>      <span class="kd">func</span><span class="p">()</span>   <span class="c1">// m 启动函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">id</span>            <span class="kt">int64</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 信号抢占
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">gsignal</span>       <span class="o">*</span><span class="nx">g</span>                <span class="c1">// signal-handling g
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">goSigStack</span>    <span class="nx">gsignalStack</span>      <span class="c1">// Go-allocated signal handling stack
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">sigmask</span>       <span class="nx">sigset</span>            <span class="c1">// storage for saved signal mask
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">signalPending</span> <span class="nx">atomic</span><span class="p">.</span><span class="nx">Uint32</span> <span class="c1">// Whether this is a pending preemption signal on this M.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">preemptGen</span> <span class="nx">atomic</span><span class="p">.</span><span class="nx">Uint32</span>	<span class="c1">// counts the number of completed preemption signals
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">p</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">id</span>          <span class="kt">int32</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">status</span>      <span class="kt">uint32</span> 
+</span></span><span class="line"><span class="cl">	<span class="nx">m</span>           <span class="nx">muintptr</span>   <span class="c1">// back-link to associated m (nil if idle)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">mcache</span>      <span class="o">*</span><span class="nx">mcache</span>    <span class="c1">// p 所在 m 的 缓存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">pcache</span>      <span class="nx">pageCache</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">goidcache</span>    <span class="kt">uint64</span> <span class="c1">// goroutine ids 缓存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// goroutines 队列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">runqhead</span> <span class="kt">uint32</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">runqtail</span> <span class="kt">uint32</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">runq</span>     <span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="nx">guintptr</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">gcw</span> <span class="nx">gcWork</span>  <span class="c1">// GC 执行时的缓冲区
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">wbBuf</span> <span class="nx">wbBuf</span> <span class="c1">// GC 写入缓冲区，未来可能会放在 g 中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">sysmontick</span>  <span class="nx">sysmontick</span> <span class="c1">// 记录上一次 sysmon 抢占的信号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">schedt</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">goidgen</span>   <span class="nx">atomic</span><span class="p">.</span><span class="nx">Uint64</span> <span class="c1">// 全局 goroutine id 生成
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">lock</span> <span class="nx">mutex</span> <span class="c1">// 全局调度器的锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">midle</span>        <span class="nx">muintptr</span> <span class="c1">// 等待工作的空闲 m
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">maxmcount</span>    <span class="kt">int32</span>    <span class="c1">// 允许的 m 的最大数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pidle</span>        <span class="nx">puintptr</span> <span class="c1">// 空闲 p
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 全局的 runnable 队列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">runq</span>     <span class="nx">gQueue</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">runqsize</span> <span class="kt">int32</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// dead G 全局缓存，避免每次创建 goroutine 时重新分配内存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">gFree</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">lock</span>    <span class="nx">mutex</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">stack</span>   <span class="nx">gList</span> <span class="c1">// Gs with stacks
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">noStack</span> <span class="nx">gList</span> <span class="c1">// Gs without stacks
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">n</span>       <span class="kt">int32</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// sudog 缓存，sudog 代表等待列表中的goroutine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">sudoglock</span>  <span class="nx">mutex</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sudogcache</span> <span class="o">*</span><span class="nx">sudog</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">freem</span> <span class="o">*</span><span class="nx">m</span> <span class="c1">// 等待释放的 m 列表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="nx">idleTime</span> <span class="nx">atomic</span><span class="p">.</span><span class="nx">Int64</span> <span class="c1">// p 的空闲时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// sysmon 用于协作抢占
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">sysmonwait</span> <span class="nx">atomic</span><span class="p">.</span><span class="nx">Bool</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sysmonnote</span> <span class="nx">note</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sysmonlock</span> <span class="nx">mutex</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>结合下图可以知道，p 和 m 是一对一绑定的，m 即 绑定操作系统线程，可运行的 g 是通过调度到 p 的  本地队列 <code>runq</code> 来执行的，全局队列中维护了一个 <code>schedt</code> 来保证 g 调度到 p 的队列。</p>
+<p>通俗地讲，schedt 类似一个全局的 pool 来负责 g (task) 绑定到 p (task thread) 中的队列，p (task thread) 会绑定一个 m (os thread) 用于真正的操作系统端的执行。</p>
+<p>
+
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" loading="lazy" src="GPM%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B.png" alt="GPM 运行流程.png" />
+      
+    </figure>
+  
+
+</p>
+<p>基于此 GPM 模型的核心思想是：</p>
+<ul>
+<li>尽可能复用线程 M: 避免频繁的操作系统线程的创建、销毁和切换</li>
+<li>多核并行能力：获取 CPU 的核心数，以此来限制 M 和 P 的数量，对应的全局变量是 <code>gomaxprocs</code></li>
+<li>工作窃取 Work Stealing：M 优先执行 P 的本地队列，如果 P 中的队列空闲，则会从其他 M 绑定的 P 中窃取 G 来执行。源码在 <a href="https://github.com/golang/go/blob/master/src/runtime/proc.go"   target="_blank">
+    go/src/runtime/proc.go</a>，方法调用路径是<code>findRunnable() → stealWork() → runqsteal()</code></li>
+<li>交接 Hand Off: M 阻塞时，会把 M 上 P 的运行队列交给其他 M 执行，由<code>handoffp()</code> 方法执行</li>
+<li>抢占调度
+<ul>
+<li>基于协作式的超时抢占：防止新的 G 一直获取不到 M 执行造成饥饿问题， 每个 G 运行 10ms 就要让出 M，让其他 G 去执行。源码在 <a href="https://github.com/golang/go/blob/master/src/runtime/proc.go"   target="_blank">
+    go/src/runtime/proc.go</a>， 方法调用路径是 <code>sysmon() → retake() → preemptone()</code></li>
+<li>基于信号的抢占：部分任务如轮训计算、GC等情况，sysmon 无法扫描到，故无法抢占成功，所以有了机遇信号的抢占。原理是注册绑定 SIGURG 信号和处理方法 doSigPreempt。源码在 <a href="https://github.com/golang/go/blob/master/src/runtime/signal_unix.go"   target="_blank">
+    go/src/runtime/signal_unix.go</a>，方法调用路径是 <code>sigtrampgo() → sighandler() → doSigPreempt()</code>，<code>doSigPreempt</code> 会改变 和 g 关联 m 的 <code>preemptGen</code> 和<code>signalPending</code></li>
+</ul>
+</li>
+</ul>
+<p>下面展开说说这些的源码实现</p>
+
+
+<h4 class="relative group">exit/panic 的调度 
+    <div id="exitpanic-%E7%9A%84%E8%B0%83%E5%BA%A6" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#exitpanic-%E7%9A%84%E8%B0%83%E5%BA%A6" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>正常情况下，如果 goroutine syscall 退出或者执行时发生panic，则会统一走 <code>Gosched()</code>方法进行调度，源码在 <a href="https://github.com/golang/go/blob/master/src/runtime/proc.go"   target="_blank">
+    go/src/runtime/proc.go</a>，方法的调用路径是<code>Gosched() → gosched_m()→ goschedImpl()</code>，<code>goschedImpl</code> 函数中会删除 g 和 m 的关联关系，并将 g 重新放回全局调度器的队列 <code>runq</code> 中。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// src/runtime/proc.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 退出 syscall 后的调度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">exitsyscall</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">sched</span><span class="p">.</span><span class="nx">disable</span><span class="p">.</span><span class="nx">user</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nf">schedEnabled</span><span class="p">(</span><span class="nx">gp</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 发起调度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nf">Gosched</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// main goroutine 中监控触发 panic 的 defer 的 goroutine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">runningPanicDefers</span><span class="p">.</span><span class="nf">Load</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Running deferred functions should not take long.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">for</span> <span class="nx">c</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">c</span> <span class="p">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="nx">c</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">runningPanicDefers</span><span class="p">.</span><span class="nf">Load</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">break</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 发起调度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nf">Gosched</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 开始调度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">Gosched</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">checkTimeouts</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">mcall</span><span class="p">(</span><span class="nx">gosched_m</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">gosched_m</span><span class="p">(</span><span class="nx">gp</span> <span class="o">*</span><span class="nx">g</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">trace</span><span class="p">.</span><span class="nx">enabled</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">traceGoSched</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">goschedImpl</span><span class="p">(</span><span class="nx">gp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">goschedImpl</span><span class="p">(</span><span class="nx">gp</span> <span class="o">*</span><span class="nx">g</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">status</span> <span class="o">:=</span> <span class="nf">readgstatus</span><span class="p">(</span><span class="nx">gp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">status</span><span class="o">&amp;^</span><span class="nx">_Gscan</span> <span class="o">!=</span> <span class="nx">_Grunning</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">dumpgstatus</span><span class="p">(</span><span class="nx">gp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;bad g status&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">casgstatus</span><span class="p">(</span><span class="nx">gp</span><span class="p">,</span> <span class="nx">_Grunning</span><span class="p">,</span> <span class="nx">_Grunnable</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 删除 g 和 m 的关联关系
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">dropg</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 将 g 放回全局队列 runq
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">globrunqput</span><span class="p">(</span><span class="nx">gp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">schedule</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
+
+<h4 class="relative group">协作式的抢占调度——超时抢占 
+    <div id="%E5%8D%8F%E4%BD%9C%E5%BC%8F%E7%9A%84%E6%8A%A2%E5%8D%A0%E8%B0%83%E5%BA%A6%E8%B6%85%E6%97%B6%E6%8A%A2%E5%8D%A0" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%8D%8F%E4%BD%9C%E5%BC%8F%E7%9A%84%E6%8A%A2%E5%8D%A0%E8%B0%83%E5%BA%A6%E8%B6%85%E6%97%B6%E6%8A%A2%E5%8D%A0" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>goalng 中专门用了一个 main goroutine 来监控整个 GPM 中的 goroutine 运行的情况，超时抢占调度是监控中的一个重要功能。超时抢占调度主要是监控运行超过 10ms 的 goroutine，针对这种 goroutine 直接进行抢占式调度，方法的调用链是 <code>main() → sysom() → retake() → preemptone()</code>，具体源码在<a href="https://github.com/golang/go/blob/master/src/runtime/proc.go"   target="_blank">
+    go/src/runtime/proc.go</a>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// src/runtime/proc.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// The main goroutine.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">GOARCH</span> <span class="o">!=</span> <span class="s">&#34;wasm&#34;</span> <span class="p">{</span> <span class="c1">// no threads on wasm yet, so no sysmon
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nf">systemstack</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">newm</span><span class="p">(</span><span class="nx">sysmon</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">sysmon</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// retake P&#39;s blocked in syscalls
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// and preempt long running G&#39;s
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nf">retake</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">idle</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">idle</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">forcePreemptNS</span> <span class="p">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">1000</span> <span class="c1">// 10ms
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">retake</span><span class="p">(</span><span class="nx">now</span> <span class="kt">int64</span><span class="p">)</span> <span class="kt">uint32</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">allp</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">pp</span> <span class="o">:=</span> <span class="nx">allp</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">pp</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">pd</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">pp</span><span class="p">.</span><span class="nx">sysmontick</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span> <span class="o">:=</span> <span class="nx">pp</span><span class="p">.</span><span class="nx">status</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">sysretake</span> <span class="o">:=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">s</span> <span class="o">==</span> <span class="nx">_Prunning</span> <span class="o">||</span> <span class="nx">s</span> <span class="o">==</span> <span class="nx">_Psyscall</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// Preempt G if it&#39;s running for too long.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">t</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="nx">pp</span><span class="p">.</span><span class="nx">schedtick</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nb">int64</span><span class="p">(</span><span class="nx">pd</span><span class="p">.</span><span class="nx">schedtick</span><span class="p">)</span> <span class="o">!=</span> <span class="nx">t</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">pd</span><span class="p">.</span><span class="nx">schedtick</span> <span class="p">=</span> <span class="nb">uint32</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">pd</span><span class="p">.</span><span class="nx">schedwhen</span> <span class="p">=</span> <span class="nx">now</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">pd</span><span class="p">.</span><span class="nx">schedwhen</span><span class="o">+</span><span class="nx">forcePreemptNS</span> <span class="o">&lt;=</span> <span class="nx">now</span> <span class="p">{</span> <span class="c1">// 如果超过 10ms，抢占 preempt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">// 抢占调度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="nf">preemptone</span><span class="p">(</span><span class="nx">pp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">// In case of syscall, preemptone() doesn&#39;t
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">// work, because there is no M wired to P.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="nx">sysretake</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
+
+<h4 class="relative group">非协作式抢占调度——信号抢占 
+    <div id="%E9%9D%9E%E5%8D%8F%E4%BD%9C%E5%BC%8F%E6%8A%A2%E5%8D%A0%E8%B0%83%E5%BA%A6%E4%BF%A1%E5%8F%B7%E6%8A%A2%E5%8D%A0" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E9%9D%9E%E5%8D%8F%E4%BD%9C%E5%BC%8F%E6%8A%A2%E5%8D%A0%E8%B0%83%E5%BA%A6%E4%BF%A1%E5%8F%B7%E6%8A%A2%E5%8D%A0" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>基于协作的超时抢占调度是有缺陷的 (<a href="https://github.com/golang/go/issues/24543"   target="_blank">
+    runtime: non-cooperative goroutine preemption #24543</a>)，在 for 循环、垃圾回收等一些场景，如果长时间占用线程是没法监测到的。为此在 Go1.14 版本新增了信号抢占调度。</p>
+<p>为了实现信号抢占，在 M 中添加了<code>preemptGen</code> 和<code>signalPending</code> 用于判断信号抢占的的情况，并在全局定义了<code>pendingPreemptSignals</code>。具体的源代码在 <a href="https://github.com/golang/go/blob/41d8e61a6b9d8f9db912626eb2bbc535e929fefc/src/runtime/signal_unix.go"   target="_blank">
+    go/src/runtime/signal_unix.go</a> 和<a href="https://github.com/golang/go/blob/41d8e61a6b9d8f9db912626eb2bbc535e929fefc/src/runtime/preempt.go"   target="_blank">
+    go/src/runtime/preempt.go</a>，方法调用链分为两部分：</p>
+<ul>
+<li>一部分是<code>sighandler() → doSigPreempt()</code> ，用于触发抢占信号的修改</li>
+<li>另一部分是<code>suspendG() → preemptM()</code>，用于监控抢占信号，并发生真正的抢占动作</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// src/runtime/signal_unix.go 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 触发信号事件，进行抢占信号的修改
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">sighandler</span><span class="p">(</span><span class="nx">sig</span> <span class="kt">uint32</span><span class="p">,</span> <span class="nx">info</span> <span class="o">*</span><span class="nx">siginfo</span><span class="p">,</span> <span class="nx">ctxt</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">,</span> <span class="nx">gp</span> <span class="o">*</span><span class="nx">g</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">sig</span> <span class="o">==</span> <span class="nx">sigPreempt</span> <span class="o">&amp;&amp;</span> <span class="nx">debug</span><span class="p">.</span><span class="nx">asyncpreemptoff</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nx">delayedSignal</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Might be a preemption signal.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nf">doSigPreempt</span><span class="p">(</span><span class="nx">gp</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">doSigPreempt</span><span class="p">(</span><span class="nx">gp</span> <span class="o">*</span><span class="nx">g</span><span class="p">,</span> <span class="nx">ctxt</span> <span class="o">*</span><span class="nx">sigctxt</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Check if this G wants to be preempted and is safe to
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// preempt.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nf">wantAsyncPreempt</span><span class="p">(</span><span class="nx">gp</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">ok</span><span class="p">,</span> <span class="nx">newpc</span> <span class="o">:=</span> <span class="nf">isAsyncSafePoint</span><span class="p">(</span><span class="nx">gp</span><span class="p">,</span> <span class="nx">ctxt</span><span class="p">.</span><span class="nf">sigpc</span><span class="p">(),</span> <span class="nx">ctxt</span><span class="p">.</span><span class="nf">sigsp</span><span class="p">(),</span> <span class="nx">ctxt</span><span class="p">.</span><span class="nf">siglr</span><span class="p">());</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// Adjust the PC and inject a call to asyncPreempt.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">ctxt</span><span class="p">.</span><span class="nf">pushCall</span><span class="p">(</span><span class="nx">abi</span><span class="p">.</span><span class="nf">FuncPCABI0</span><span class="p">(</span><span class="nx">asyncPreempt</span><span class="p">),</span> <span class="nx">newpc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 修改 g 关联 m 的 抢占信号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// Acknowledge the preemption.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">gp</span><span class="p">.</span><span class="nx">m</span><span class="p">.</span><span class="nx">preemptGen</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">gp</span><span class="p">.</span><span class="nx">m</span><span class="p">.</span><span class="nx">signalPending</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">GOOS</span> <span class="o">==</span> <span class="s">&#34;darwin&#34;</span> <span class="o">||</span> <span class="nx">GOOS</span> <span class="o">==</span> <span class="s">&#34;ios&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">pendingPreemptSignals</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// src/runtime/preempt.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 监控抢占信号状态，并执行抢占动作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">suspendG</span><span class="p">(</span><span class="nx">gp</span> <span class="o">*</span><span class="nx">g</span><span class="p">)</span> <span class="nx">suspendGState</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">switch</span> <span class="nx">s</span> <span class="o">:=</span> <span class="nf">readgstatus</span><span class="p">(</span><span class="nx">gp</span><span class="p">);</span> <span class="nx">s</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">case</span> <span class="nx">_Grunning</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">					<span class="c1">// Prepare for asynchronous preemption.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="nx">asyncM2</span> <span class="o">:=</span> <span class="nx">gp</span><span class="p">.</span><span class="nx">m</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">// 获取 m 中的 preemptGen 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="nx">asyncGen2</span> <span class="o">:=</span> <span class="nx">asyncM2</span><span class="p">.</span><span class="nx">preemptGen</span><span class="p">.</span><span class="nf">Load</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">needAsync</span> <span class="o">:=</span> <span class="nx">asyncM</span> <span class="o">!=</span> <span class="nx">asyncM2</span> <span class="o">||</span> <span class="nx">asyncGen</span> <span class="o">!=</span> <span class="nx">asyncGen2</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">asyncM</span> <span class="p">=</span> <span class="nx">asyncM2</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">asyncGen</span> <span class="p">=</span> <span class="nx">asyncGen2</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">// cas 确认 g 状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="nf">casfrom_Gscanstatus</span><span class="p">(</span><span class="nx">gp</span><span class="p">,</span> <span class="nx">_Gscanrunning</span><span class="p">,</span> <span class="nx">_Grunning</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="k">if</span> <span class="nx">preemptMSupported</span> <span class="o">&amp;&amp;</span> <span class="nx">debug</span><span class="p">.</span><span class="nx">asyncpreemptoff</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">needAsync</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">now</span> <span class="o">:=</span> <span class="nf">nanotime</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">					<span class="k">if</span> <span class="nx">now</span> <span class="o">&gt;=</span> <span class="nx">nextPreemptM</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">						<span class="nx">nextPreemptM</span> <span class="p">=</span> <span class="nx">now</span> <span class="o">+</span> <span class="nx">yieldDelay</span><span class="o">/</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl">						<span class="c1">// 抢占 M
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>						<span class="nf">preemptM</span><span class="p">(</span><span class="nx">asyncM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">					<span class="p">}</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>	
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">preemptM</span><span class="p">(</span><span class="nx">mp</span> <span class="o">*</span><span class="nx">m</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">GOOS</span> <span class="o">==</span> <span class="s">&#34;darwin&#34;</span> <span class="o">||</span> <span class="nx">GOOS</span> <span class="o">==</span> <span class="s">&#34;ios&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">execLock</span><span class="p">.</span><span class="nf">rlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">mp</span><span class="p">.</span><span class="nx">signalPending</span><span class="p">.</span><span class="nf">CompareAndSwap</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">GOOS</span> <span class="o">==</span> <span class="s">&#34;darwin&#34;</span> <span class="o">||</span> <span class="nx">GOOS</span> <span class="o">==</span> <span class="s">&#34;ios&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">pendingPreemptSignals</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">		<span class="nf">signalM</span><span class="p">(</span><span class="nx">mp</span><span class="p">,</span> <span class="nx">sigPreempt</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">GOOS</span> <span class="o">==</span> <span class="s">&#34;darwin&#34;</span> <span class="o">||</span> <span class="nx">GOOS</span> <span class="o">==</span> <span class="s">&#34;ios&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">execLock</span><span class="p">.</span><span class="nf">runlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
+
+<h4 class="relative group">工作窃取 work stealing 
+    <div id="%E5%B7%A5%E4%BD%9C%E7%AA%83%E5%8F%96-work-stealing" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%B7%A5%E4%BD%9C%E7%AA%83%E5%8F%96-work-stealing" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>工作窃取是 Fork-Join 模型的一个核心，我们看到 Java 中的 ForkJoinThread 也有这个，同样的，go 中的 work stealing 实现也类似于 java 中的 <em><strong>ForkJoinPool</strong></em>，即在全局调度中 <code>findRunnable</code> ，找寻待执行的任务，并尝试 steal 到空闲的 p 中，下面我们看一下源码，具体在<a href="https://github.com/golang/go/blob/master/src/runtime/proc.go"   target="_blank">
+    go/src/runtime/proc.go</a>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">schedule</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">gp</span><span class="p">,</span> <span class="nx">inheritTime</span><span class="p">,</span> <span class="nx">tryWakeP</span> <span class="o">:=</span> <span class="nf">findRunnable</span><span class="p">()</span> <span class="c1">// blocks until work is available
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">findRunnable</span><span class="p">()</span> <span class="p">(</span><span class="nx">gp</span> <span class="o">*</span><span class="nx">g</span><span class="p">,</span> <span class="nx">inheritTime</span><span class="p">,</span> <span class="nx">tryWakeP</span> <span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Spinning Ms: steal work from other Ps.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">mp</span><span class="p">.</span><span class="nx">spinning</span> <span class="o">||</span> <span class="mi">2</span><span class="o">*</span><span class="nx">sched</span><span class="p">.</span><span class="nx">nmspinning</span><span class="p">.</span><span class="nf">Load</span><span class="p">()</span> <span class="p">&lt;</span> <span class="nx">gomaxprocs</span><span class="o">-</span><span class="nx">sched</span><span class="p">.</span><span class="nx">npidle</span><span class="p">.</span><span class="nf">Load</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">!</span><span class="nx">mp</span><span class="p">.</span><span class="nx">spinning</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">mp</span><span class="p">.</span><span class="nf">becomeSpinning</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 尝试偷 待执行的 goroutine 或者 timer 从任一 p 中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">gp</span><span class="p">,</span> <span class="nx">inheritTime</span><span class="p">,</span> <span class="nx">tnow</span><span class="p">,</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">newWork</span> <span class="o">:=</span> <span class="nf">stealWork</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">gp</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// Successfully stole.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">return</span> <span class="nx">gp</span><span class="p">,</span> <span class="nx">inheritTime</span><span class="p">,</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><a href="https://medium.com/a-journey-with-go/go-work-stealing-in-go-scheduler-d439231be64d"   target="_blank">
+    Go: Work-Stealing in Go Scheduler</a></p>
+
+
+<h4 class="relative group">交接 hand off 
+    <div id="%E4%BA%A4%E6%8E%A5-hand-off" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E4%BA%A4%E6%8E%A5-hand-off" aria-label="Anchor">#</a>
+    </span>        
+    
+</h4>
+<p>交接主要是接管 syscall 或者 locked 被阻塞的 m，将其对应的 g 交给别的 p 来执行，具体在<a href="https://github.com/golang/go/blob/master/src/runtime/proc.go"   target="_blank">
+    go/src/runtime/proc.go</a> 的<code>handoffp()</code> 方法中，调用到 <code>handoffp()</code> 的路径有下面几条：</p>
+<ul>
+<li>m 退出调用：<code>mexit() → handoffp()</code></li>
+<li>全局监控器调用：<code>sysmon() → retake() → handoffp()</code></li>
+<li>进入 syscall 阻塞时调用：<code>entersyscallblock() → entersyscallblock_handoff() → handoffp()</code></li>
+<li>退出 syscall 时调用：<code>exitsyscall() → exitsyscall0() → stoplockedm() → handoffp()</code></li>
+<li>每个 p 在进行 gc 时调用：<code>forEachP() → handoffp()</code></li>
+</ul>
+
+
+<h3 class="relative group">Go 关键字的编译 
+    <div id="go-%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E7%BC%96%E8%AF%91" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#go-%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E7%BC%96%E8%AF%91" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>在 go 中只需要通过声明 go 关键字就可以创建一个goroutine，具体实现是通过在编译的时候，编译器会将 go 关键字转换成 <code>newproc()</code> 函数调用，编译的转换具体是在 <a href="https://github.com/golang/go/blob/master/src/cmd/compile/internal/ssagen/ssa.go"   target="_blank">
+    go/src/cmd/compile/internal/ssagen/ssa.go</a>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// src/cmd/compile/internal/ssagen/ssa.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">state</span><span class="p">)</span> <span class="nf">stmt</span><span class="p">(</span><span class="nx">n</span> <span class="nx">ir</span><span class="p">.</span><span class="nx">Node</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span><span class="p">.</span><span class="nf">stmtList</span><span class="p">(</span><span class="nx">n</span><span class="p">.</span><span class="nf">Init</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="k">switch</span> <span class="nx">n</span><span class="p">.</span><span class="nf">Op</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">ir</span><span class="p">.</span><span class="nx">OGO</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">n</span> <span class="o">:=</span> <span class="nx">n</span><span class="p">.(</span><span class="o">*</span><span class="nx">ir</span><span class="p">.</span><span class="nx">GoDeferStmt</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span><span class="p">.</span><span class="nf">callResult</span><span class="p">(</span><span class="nx">n</span><span class="p">.</span><span class="nx">Call</span><span class="p">.(</span><span class="o">*</span><span class="nx">ir</span><span class="p">.</span><span class="nx">CallExpr</span><span class="p">),</span> <span class="nx">callGo</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">state</span><span class="p">)</span> <span class="nf">call</span><span class="p">(</span><span class="nx">n</span> <span class="o">*</span><span class="nx">ir</span><span class="p">.</span><span class="nx">CallExpr</span><span class="p">,</span> <span class="nx">k</span> <span class="nx">callKind</span><span class="p">,</span> <span class="nx">returnResultAddr</span> <span class="kt">bool</span><span class="p">)</span> <span class="o">*</span><span class="nx">ssa</span><span class="p">.</span><span class="nx">Value</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">switch</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">case</span> <span class="nx">k</span> <span class="o">==</span> <span class="nx">callGo</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">aux</span> <span class="o">:=</span> <span class="nx">ssa</span><span class="p">.</span><span class="nf">StaticAuxCall</span><span class="p">(</span><span class="nx">ir</span><span class="p">.</span><span class="nx">Syms</span><span class="p">.</span><span class="nx">Newproc</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">f</span><span class="p">.</span><span class="nx">ABIDefault</span><span class="p">.</span><span class="nf">ABIAnalyzeTypes</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="nx">ACArgs</span><span class="p">,</span> <span class="nx">ACResults</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">call</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nf">newValue0A</span><span class="p">(</span><span class="nx">ssa</span><span class="p">.</span><span class="nx">OpStaticLECall</span><span class="p">,</span> <span class="nx">aux</span><span class="p">.</span><span class="nf">LateExpansionResultType</span><span class="p">(),</span> <span class="nx">aux</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>newproc()</code>方法中会创建一个*<code>_Grunnable</code>* 状态的 goroutine</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Create a new g running fn.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Put it on the queue of g&#39;s waiting to run.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// The compiler turns a go statement into a call to this.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">newproc</span><span class="p">(</span><span class="nx">fn</span> <span class="o">*</span><span class="nx">funcval</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">gp</span> <span class="o">:=</span> <span class="nf">getg</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pc</span> <span class="o">:=</span> <span class="nf">getcallerpc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">systemstack</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">newg</span> <span class="o">:=</span> <span class="nf">newproc1</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">gp</span><span class="p">,</span> <span class="nx">pc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="nx">pp</span> <span class="o">:=</span> <span class="nf">getg</span><span class="p">().</span><span class="nx">m</span><span class="p">.</span><span class="nx">p</span><span class="p">.</span><span class="nf">ptr</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">runqput</span><span class="p">(</span><span class="nx">pp</span><span class="p">,</span> <span class="nx">newg</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">mainStarted</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">wakep</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
+
+<h2 class="relative group">总结 
+    <div id="%E6%80%BB%E7%BB%93" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E6%80%BB%E7%BB%93" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>Java 的设计思路是，先基于底层的线程模型进行一一对应的实现，然后再次基础上封装并发工具，如 <code>Executors</code> 中提供的各种各样的线程池，大体上是基于 池化 和 ForkJoin 的思想构建了2中线程池。坏处是需要开发人员去理解之后才会更优雅地使用，增加了编程难度。</p>
+<p>反观 Go 提供的 GPM，虽说也是基于 Fork-Join 的模式构建的，但在此基础上加了监控和抢占调度，并将这套相对复杂的设计封装在 Go SDK 中。用户层面来说，只需要通过 <code>go</code> 关键字就可以快速实现，并在 GPM 提供的多线程保证情况下，开发人员不需要专门去了解其设计思路也能很好的实现高并发和高吞吐量，编程难度降低且写法也大大简化。</p>
+
+
+<h2 class="relative group">其他 
+    <div id="%E5%85%B6%E4%BB%96" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#%E5%85%B6%E4%BB%96" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>内存模型这部分暂不整理了，有机会之后再整理，相关的文档可以参考这些</p>
+<p><a href="https://go.dev/ref/mem"   target="_blank">
+    The Go Memory Model - The Go Programming Language</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Java_memory_model"   target="_blank">
+    Java memory model</a></p>
+<p><a href="https://www.zeng.dev/post/2019-java2go-concurrency/"   target="_blank">
+    Java &amp; Go 并发编程对比</a></p>
+
+        </div>
+        
+        
+
+        
+        
+
+          
+      </div>
+     
+      
+      
+        
+        
+          
+          
+        
+      <script>
+        var oid = "views_articels\/2023-09-29\/index.md"
+        var oid_likes = "likes_articels\/2023-09-29\/index.md"
+      </script>
+      
+      
+      
+      <script type="text/javascript" src="/js/page.min.b06a29d42a4ed16787978e2eee1e8c797b7698db2bc14ccee78f5c80ac566fc996190a73ad80a5e987558474b20b96fa38f7d85b405f165ff72b7b163c5ad11b.js" integrity="sha512-sGop1CpO0WeHl44u7h6MeXt2mNsrwUzO549cgKxWb8mWGQpzrYCl6YdVhHSyC5b6OPfYW0BfFl/3K3sWPFrRGw=="></script>
+  
+    </section>
+  <footer class="pt-8 max-w-prose print:hidden">
+
+    
+  
+    
+    
+    
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="flex group mr-3" href="/articels/2023-08-25/">
+              <span
+                class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-3 text-neutral-700 group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Hugo + umami 博客统计面板</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2023-08-25 00:00:00 &#43;0000 UTC">25 August 2023</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+            <a class="flex text-right group ml-3" href="/articels/2023-10-30/">
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >向量相似性检索方法</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2023-10-30 00:00:00 &#43;0000 UTC">30 October 2023</time>
+                  
+                </span>
+              </span>
+              <span
+                class="ml-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span
+                class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+            </a>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+    
+  </footer>
+</article>
+
+      <div id="top-scroller" class="pointer-events-none absolute top-[110vh] bottom-0 w-12 ltr:right-0 rtl:left-0">
+  <a href="#the-top"
+    class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 mb-16 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+    aria-label="Scroll to top" title="Scroll to top">
+    &uarr;
+  </a>
+</div>
+    </main><footer id="site-footer" class="py-10 print:hidden">
+  
+  
+    
+    <nav class="flex flex-row pb-4 text-base font-medium text-neutral-500 dark:text-neutral-400">
+      <ul class="flex flex-col list-none sm:flex-row">
+        
+        <li class="flex mb-1 ltr:text-right rtl:text-left sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+          <a class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2 flex items-center" href=""
+            title="">
+            
+            
+          </a>
+        </li>
+        
+      </ul>
+    </nav>
+    
+  
+  <div class="flex items-center justify-between">
+
+    
+    
+    <p class="text-sm text-neutral-500 dark:text-neutral-400">
+      &copy;
+      2024
+      Utkarsh Deoli
+    </p>
+    
+
+    
+    
+
+  </div>
+  <script>
+    
+    mediumZoom(document.querySelectorAll("img:not(.nozoom)"), {
+      margin: 24,
+      background: 'rgba(0,0,0,0.5)',
+      scrollOffset: 0,
+    })
+    
+  </script>
+  
+  
+  <script type="text/javascript" src="/js/process.min.62060bb247f4de2b6dde45903668fefb68d792f365587605177b1227c0cf43588701edaca0cb40e2c8e2789bd5ce67c1d2a215b9fb258c3496a7cd25e7cb5fdf.js" integrity="sha512-YgYLskf03itt3kWQNmj&#43;&#43;2jXkvNlWHYFF3sSJ8DPQ1iHAe2soMtA4sjieJvVzmfB0qIVufsljDSWp80l58tf3w=="></script>
+  
+  
+</footer>
+  </div>
+</body>
+
+</html>

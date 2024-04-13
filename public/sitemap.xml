@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://utkarshdeoli.web.app/</loc>
+    <lastmod>2024-04-13T23:25:36+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://utkarshdeoli.web.app/projects/</loc>
+    <lastmod>2024-04-13T23:25:36+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://utkarshdeoli.web.app/blog/</loc>
+    <lastmod>2024-04-13T23:25:36+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://utkarshdeoli.web.app/blog/dsa/</loc>
+    <lastmod>2024-04-13T23:25:36+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://utkarshdeoli.web.app/projects/forestfiredetection/forestfire/</loc>
+    <lastmod>2024-04-13T23:25:36+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://utkarshdeoli.web.app/about/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>

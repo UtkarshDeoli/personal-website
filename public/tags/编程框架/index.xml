@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>编程框架 on Utkarsh Deoli</title>
+    <link>http://localhost:1313/tags/%E7%BC%96%E7%A8%8B%E6%A1%86%E6%9E%B6/</link>
+    <description>Recent content in 编程框架 on Utkarsh Deoli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2024 Utkarsh Deoli</copyright>
+    <lastBuildDate>Sun, 21 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/%E7%BC%96%E7%A8%8B%E6%A1%86%E6%9E%B6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 Coze 搭建 TiDB 助手</title>
+      <link>http://localhost:1313/articels/2024-01-21/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2024-01-21/</guid>
+      <description>尝试用字节的 Coze 做个 TiDB 文档助手，顺道梳理AI应用的搭建和 Coze 的实现。</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2024-01-21/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>Java &amp; Go 线程模式对比</title>
+      <link>http://localhost:1313/articels/2023-09-29/</link>
+      <pubDate>Fri, 29 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2023-09-29/</guid>
+      <description>本文旨在从源码角度阐述 Java 和 Go 中对线程/协程的管理、调度，ForkJoin模型等</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2023-09-29/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>Hugo &#43; umami 博客统计面板</title>
+      <link>http://localhost:1313/articels/2023-08-25/</link>
+      <pubDate>Fri, 25 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2023-08-25/</guid>
+      <description>使用 umami 为 Hugo 博客添加统计面板</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2023-08-25/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>探究 Spring-Boot 内置Server</title>
+      <link>http://localhost:1313/articels/2023-07-30/</link>
+      <pubDate>Sun, 30 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2023-07-30/</guid>
+      <description>深入 Spring-Boot 源码探究内置Server，包括tomcat、jetty、undertow 和 netty</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2023-07-30/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>搭建Go版本Kubernetes微服务示例</title>
+      <link>http://localhost:1313/articels/2023-07-20/</link>
+      <pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2023-07-20/</guid>
+      <description>使用go语言基于Kubernetes搭建微服务，业务需求参考《凤凰架构》Kubernetes微服务</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2023-07-20/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>为什么Spring可以“自己注入自己”</title>
+      <link>http://localhost:1313/articels/2023-06-21/</link>
+      <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2023-06-21/</guid>
+      <description>看一下Spring源码和PR记录，解答从哪个版本哪个提交那段代码后，Spring支持了Self-Injection</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2023-06-21/feature.png" />
+    </item>
+    
+    <item>
+      <title>Go语言指针性能</title>
+      <link>http://localhost:1313/articels/2023-06-07/</link>
+      <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2023-06-07/</guid>
+      <description>Go值对象和指针对象在存储、性能和使用上的区别</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2023-06-07/feature.jpg" />
+    </item>
+    
+    <item>
+      <title>Netty 源码分析及内存溢出思路</title>
+      <link>http://localhost:1313/articels/2023-02-06/</link>
+      <pubDate>Mon, 06 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2023-02-06/</guid>
+      <description>主要介绍了Java NIO、Netty和Spring Reactor中Buffer的使用和继承关系。</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2023-02-06/feature.jpeg" />
+    </item>
+    
+    <item>
+      <title>博客搭建简述</title>
+      <link>http://localhost:1313/articels/2022-12-09/</link>
+      <pubDate>Fri, 09 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/articels/2022-12-09/</guid>
+      <description>简述一下博客搭建过程。&lt;br/&gt;框架使用的是用GO语言编写的Hugo，Hugo模板用的是blowfish。</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/articels/2022-12-09/feature.png" />
+    </item>
+    
+  </channel>
+</rss>

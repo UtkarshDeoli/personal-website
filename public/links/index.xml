@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Links on Utkarsh Deoli</title>
+    <link>http://localhost:1313/links/</link>
+    <description>Recent content in Links on Utkarsh Deoli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2024 Utkarsh Deoli</copyright>
+    <atom:link href="http://localhost:1313/links/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>nintendo switch</title>
+      <link>http://localhost:1313/links/nintendo-switch/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/links/nintendo-switch/</guid>
+      <description>SW-4890-9270-8324</description>
+      
+    </item>
+    
+    <item>
+      <title>邮箱</title>
+      <link>http://localhost:1313/links/email/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/links/email/</guid>
+      <description>QQ Email: 459312872@qq.</description>
+      
+    </item>
+    
+  </channel>
+</rss>
