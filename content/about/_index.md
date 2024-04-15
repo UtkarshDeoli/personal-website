@@ -17,7 +17,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non magna ex. D
 
 
 
-{{< timelineItem icon="star" header="header" badge="2022-present" subheader="subheader" >}}
+{{< timelineItem icon="star" header="tomato" badge="2022-present" subheader="subheader" >}}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non magna ex. Donec sollicitudin ut lorem quis lobortis. Nam ac ipsum libero. Sed a ex eget ipsum tincidunt venenatis quis sed nisl. Pellentesque sed urna vel odio consequat tincidunt id ut purus. Nam sollicitudin est sed dui interdum rhoncus. 
 {{< /timelineItem >}}
 {{< timelineItem icon="code" header="header" badge="2022-present" subheader="subheader" >}}
@@ -27,19 +27,27 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non magna ex. D
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non magna ex. Donec sollicitudin ut lorem quis lobortis. Nam ac ipsum libero. Sed a ex eget ipsum tincidunt venenatis quis sed nisl. Pellentesque sed urna vel odio consequat tincidunt id ut purus. Nam sollicitudin est sed dui interdum rhoncus. 
 {{< /timelineItem >}}
 {{< timelineItem icon="heart" header="Discovering my Intrest" badge="2015-2018">}}
-{{< badge >}}
-2018
-{{< /badge >}}
-<p>Completed 10th</p>
-<h3>Science Exhibition</h3>
-<h3> First Youtube Video {{< badge >}}
-2015 Mar
-{{< /badge >}}<h3>
+
+{{< /timelineItem >}}
+
+
+{{< timelineItem icon="pencil" header="Completed School" badge="2018-2020">}}
+<p></p>
+<h3>Science Exhibitions</h3>
+<img src="assets/me2018.jpg"/>
+<img src="me2018.jpg"/>
+<p>Loved to participare! Won Some Lost Many</p>
+{{< /timelineItem >}}
+
+
+{{< timelineItem icon="heart" header="First Time On Youtube" badge="2015">}}
+<p>It's 144p</p>
 {{< youtubeLite id="U8jsSktGmjM" label="My First Youtube Video" >}}
 
-<h3> 555 Timer {{< badge >}}
-2014 June
-{{< /badge >}}</h3>
+{{< /timelineItem >}}
+
+
+{{< timelineItem icon="heart" header="Discovering my Intrest" badge="2014">}}
 <p>
 During the summer vacation of 2014, I received an electronics starter kit, sparking a deep interest in tinkering. Completely new to the field at the time, I eagerly dived into experimentation. Despite my initial lack of knowledge, I eagerly explored Google for circuit designs. Using only a timer 555, I embarked on a self-guided journey of learning through YouTube tutorials, gradually honing my skills and expanding my understanding of electronics.
 </p>
