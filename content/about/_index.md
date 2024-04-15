@@ -38,7 +38,7 @@ Hello, I am Utkarsh from India. Currently, I am enrolled in an undergraduate pro
 {{< /timelineItem >}}
 
 
-{{< timelineItem icon="heart" header="Discovering my Intrest" badge="2014">}}
+{{< timelineItem icon="heart" header="Discovering my Interest" badge="2014">}}
 <p>
 During the summer vacation of 2014, I received an electronics starter kit, sparking a deep interest in tinkering. Completely new to the field at the time, I eagerly dived into experimentation. Despite my initial lack of knowledge, I eagerly explored Google for circuit designs. Using only a timer 555, I embarked on a self-guided journey of learning through YouTube tutorials, gradually honing my skills and expanding my understanding of electronics.
 </p>
