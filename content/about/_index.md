@@ -11,23 +11,14 @@ Hello, I am Utkarsh from India. Currently, I am enrolled in an undergraduate pro
 # Timeline
 {{< timeline >}}
 
-{{< timelineItem icon="ghost" header="header" badge="2022-present" subheader="subheader" >}}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non magna ex. Donec sollicitudin ut lorem quis lobortis. Nam ac ipsum libero. Sed a ex eget ipsum tincidunt venenatis quis sed nisl. Pellentesque sed urna vel odio consequat tincidunt id ut purus. Nam sollicitudin est sed dui interdum rhoncus. 
+{{< timelineItem icon="ghost" header="Present" badge="2022-present">}}
+<p>Joined University</p>
 {{< /timelineItem >}}
 
 
 
-{{< timelineItem icon="star" header="tomato" badge="2022-present" subheader="subheader" >}}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non magna ex. Donec sollicitudin ut lorem quis lobortis. Nam ac ipsum libero. Sed a ex eget ipsum tincidunt venenatis quis sed nisl. Pellentesque sed urna vel odio consequat tincidunt id ut purus. Nam sollicitudin est sed dui interdum rhoncus. 
-{{< /timelineItem >}}
-{{< timelineItem icon="code" header="header" badge="2022-present" subheader="subheader" >}}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non magna ex. Donec sollicitudin ut lorem quis lobortis. Nam ac ipsum libero. Sed a ex eget ipsum tincidunt venenatis quis sed nisl. Pellentesque sed urna vel odio consequat tincidunt id ut purus. Nam sollicitudin est sed dui interdum rhoncus. 
-{{< /timelineItem >}}
-{{< timelineItem icon="ghost" header="header" badge="2022-present" subheader="subheader" >}}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non magna ex. Donec sollicitudin ut lorem quis lobortis. Nam ac ipsum libero. Sed a ex eget ipsum tincidunt venenatis quis sed nisl. Pellentesque sed urna vel odio consequat tincidunt id ut purus. Nam sollicitudin est sed dui interdum rhoncus. 
-{{< /timelineItem >}}
-{{< timelineItem icon="heart" header="Discovering my Intrest" badge="2015-2018">}}
-
+{{< timelineItem icon="code" header="Freelancing" badge="2020-2021">}}
+<p>Freelanced on fiverr as an Arduino Developer</p>
 {{< /timelineItem >}}
 
 
