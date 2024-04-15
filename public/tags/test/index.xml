@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Test on Utkarsh Deoli</title>
+    <link>http://localhost:1313/tags/test/</link>
+    <description>Recent content in Test on Utkarsh Deoli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2024 Utkarsh Deoli</copyright>
+    <lastBuildDate>Mon, 15 Apr 2024 07:48:17 +0530</lastBuildDate><atom:link href="http://localhost:1313/tags/test/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Install Arch Guide</title>
+      <link>http://localhost:1313/blog/install-arch/</link>
+      <pubDate>Mon, 15 Apr 2024 07:48:17 +0530</pubDate>
+      
+      <guid>http://localhost:1313/blog/install-arch/</guid>
+      <description>How to Install Arch Linux # Step 1: Download the Arch Linux ISO # Go to the Arch Linux website and navigate to the download section.</description>
+      
+    </item>
+    
+  </channel>
+</rss>

@@ -3,37 +3,44 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
-    <loc>https://utkarshdeoli.web.app/</loc>
+    <loc>https://utkarshdeoli.in/</loc>
+    <lastmod>2024-04-15T07:48:17+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://utkarshdeoli.in/blog/install-arch/</loc>
+    <lastmod>2024-04-15T07:48:17+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://utkarshdeoli.in/about/</loc>
+    <lastmod>2024-04-14T21:38:17+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://utkarshdeoli.in/projects/</loc>
     <lastmod>2024-04-13T23:25:36+05:30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://utkarshdeoli.web.app/projects/</loc>
+    <loc>https://utkarshdeoli.in/blog/</loc>
     <lastmod>2024-04-13T23:25:36+05:30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://utkarshdeoli.web.app/blog/</loc>
+    <loc>https://utkarshdeoli.in/blog/dsa/</loc>
     <lastmod>2024-04-13T23:25:36+05:30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://utkarshdeoli.web.app/blog/dsa/</loc>
+    <loc>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</loc>
     <lastmod>2024-04-13T23:25:36+05:30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://utkarshdeoli.web.app/projects/forestfiredetection/forestfire/</loc>
-    <lastmod>2024-04-13T23:25:36+05:30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://utkarshdeoli.web.app/about/</loc>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>

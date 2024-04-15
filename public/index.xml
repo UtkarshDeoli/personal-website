@@ -2,28 +2,38 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Utkarsh Deoli</title>
-    <link>https://utkarshdeoli.web.app/</link>
+    <link>https://utkarshdeoli.in/</link>
     <description>Recent content on Utkarsh Deoli</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© 2024 Utkarsh Deoli</copyright>
-    <lastBuildDate>Sat, 13 Apr 2024 23:25:36 +0530</lastBuildDate><atom:link href="https://utkarshdeoli.web.app/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 15 Apr 2024 07:48:17 +0530</lastBuildDate><atom:link href="https://utkarshdeoli.in/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Install Arch Guide</title>
+      <link>https://utkarshdeoli.in/blog/install-arch/</link>
+      <pubDate>Mon, 15 Apr 2024 07:48:17 +0530</pubDate>
+      
+      <guid>https://utkarshdeoli.in/blog/install-arch/</guid>
+      <description>How to Install Arch Linux # Step 1: Download the Arch Linux ISO # Go to the Arch Linux website and navigate to the download section.</description>
+      
+    </item>
+    
     <item>
       <title>Data Structures And Algo</title>
-      <link>https://utkarshdeoli.web.app/blog/dsa/</link>
+      <link>https://utkarshdeoli.in/blog/dsa/</link>
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
-      <guid>https://utkarshdeoli.web.app/blog/dsa/</guid>
+      <guid>https://utkarshdeoli.in/blog/dsa/</guid>
       <description>What is DSA?</description>
-      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://utkarshdeoli.web.app/blog/dsa/feature.jpg" />
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://utkarshdeoli.in/blog/dsa/feature.jpg" />
     </item>
     
     <item>
       <title>Forest Fire Detection &amp; Prevention</title>
-      <link>https://utkarshdeoli.web.app/projects/forestfiredetection/forestfire/</link>
+      <link>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</link>
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
-      <guid>https://utkarshdeoli.web.app/projects/forestfiredetection/forestfire/</guid>
+      <guid>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</guid>
       <description>Introduction # This document is about Forest Fire Detection &amp;amp; Prevention.</description>
       
     </item>

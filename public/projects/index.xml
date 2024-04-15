@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Utkarsh Deoli</title>
-    <link>https://utkarshdeoli.web.app/projects/</link>
+    <link>https://utkarshdeoli.in/projects/</link>
     <description>Recent content on Utkarsh Deoli</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© 2024 Utkarsh Deoli</copyright>
-    <lastBuildDate>Sat, 13 Apr 2024 23:25:36 +0530</lastBuildDate><atom:link href="https://utkarshdeoli.web.app/projects/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Apr 2024 23:25:36 +0530</lastBuildDate><atom:link href="https://utkarshdeoli.in/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Forest Fire Detection &amp; Prevention</title>
-      <link>https://utkarshdeoli.web.app/projects/forestfiredetection/forestfire/</link>
+      <link>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</link>
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
-      <guid>https://utkarshdeoli.web.app/projects/forestfiredetection/forestfire/</guid>
+      <guid>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</guid>
       <description>Introduction # This document is about Forest Fire Detection &amp;amp; Prevention.</description>
       
     </item>

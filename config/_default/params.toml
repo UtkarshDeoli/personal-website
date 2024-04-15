@@ -1,15 +1,14 @@
 colorScheme = "fire"
 defaultAppearance = "dark"
-autoSwitchAppearance = true
+autoSwitchAppearance = false
 enableSearch = true
 enableCodeCopy = false
 disableImageOptimization = false
 disableTextInHeader = false
 defaultBackgroundImage = "image.jpg"
-defaultFeaturedImage = "image.jpg"
+defaultFeaturedImage = "bk2.jpg"
 highlightCurrentMenuArea = "enable"
-
-mainSections = ["blog","projects"]
+mainSections = [ "blog", "projects" ]
 
 [header]
 layout = "fixed-fill-blur"
@@ -32,7 +31,6 @@ cardViewScreenWidth = false
 layoutBackgroundBlur = true
 homepageImage = "back.gif"
 
-
 [article]
 showDate = true
 showViews = true
@@ -53,7 +51,7 @@ showHeadingAnchors = true
 showPagination = true
 invertPagination = false
 showReadingTime = true
-showTableOfContents = false
+showTableOfContents = true
 showTaxonomies = false
 showAuthorsBadges = false
 showWordCount = true
@@ -73,6 +71,7 @@ groupByYear = true
 cardView = false
 cardViewScreenWidth = false
 constrainItemsWidth = false
+heroStyle = "background"
 
 [sitemap]
 excludedKinds = [ "taxonomy", "term" ]
@@ -98,13 +97,13 @@ cardView = false
 cardViewScreenWidth = false
 
 [firebase]
-apiKey= "AIzaSyAd1UI7tCGyjupyyE_QiAY-DRKNR10l7S4"
-authDomain= "utkarshdeolidev.firebaseapp.com"
-projectId= "utkarshdeolidev"
-storageBucket= "utkarshdeolidev.appspot.com"
-messagingSenderId= "940345973759"
-appId= "1:940345973759:web:28db2df19bba3d06f5e5ca"
-measurementId= "G-YP0F0GC2D5"
+apiKey = "AIzaSyAd1UI7tCGyjupyyE_QiAY-DRKNR10l7S4"
+authDomain = "utkarshdeolidev.firebaseapp.com"
+projectId = "utkarshdeolidev"
+storageBucket = "utkarshdeolidev.appspot.com"
+messagingSenderId = "940345973759"
+appId = "1:940345973759:web:28db2df19bba3d06f5e5ca"
+measurementId = "G-YP0F0GC2D5"
 
 [fathomAnalytics]
 
