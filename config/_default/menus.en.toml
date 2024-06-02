@@ -22,13 +22,14 @@ weight = 3
 [[main]]
 name = "Contact"
 pageRef = "Contact"
+url = "mailto:utkarsh.deoli+work@gmail.com"
 identifier = "f4AK879oeK"
 weight = 4
 
 [[main]]
 name = "Resume"
 pageRef = "Resume"
-url = "https://firebasestorage.googleapis.com/v0/b/utkarsh-deoli-portfolio.appspot.com/o/UtkarshDeoliCV%20(1).pdf?alt=media&token=dbb3a0de-4dd5-4f17-a410-c1ceee191f75"
+url = "https://firebasestorage.googleapis.com/v0/b/utkarshdeolidev.appspot.com/o/UtkarshDeoli.pdf?alt=media"
 identifier = "r4AK879oeK"
 weight = 5
 

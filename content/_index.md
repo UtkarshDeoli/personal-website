@@ -5,12 +5,10 @@
   breakLines=false
   loop=true >}}
 💻 Programmer From India 🇮🇳
-🚀 Flutter Application Developer
-🔌 Embedded Software/Hardware Engineer
-🌐 Web Developer
-🌟 Open Source
-🐧 I use Arch btw!
+🚀 Flutter Application Developer 🚀
+🔌 Embedded Software/Hardware Engineer 🔌
+🌐 Web Developer 🌐
+🌟 Open Source 🌟
+🐧 I use Arch btw! 🐧
 {{< /typeit >}}
 <br>
-
-

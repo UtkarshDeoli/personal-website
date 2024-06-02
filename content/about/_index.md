@@ -18,7 +18,7 @@ Hello, I am Utkarsh from India. Currently, I am enrolled in an undergraduate pro
 
 
 {{< timelineItem icon="code" header="Freelancing" badge="2020-2021">}}
-<p>Freelanced on fiverr as an Arduino Developer</p>
+<p>Freelanced on fiver as an Arduino Developer</p>
 {{< /timelineItem >}}
 
 
@@ -27,7 +27,7 @@ Hello, I am Utkarsh from India. Currently, I am enrolled in an undergraduate pro
 <h3>Science Exhibitions</h3>
 <img src="assets/me2018.jpg"/>
 <img src="me2018.jpg"/>
-<p>Loved to participare! Won Some Lost Many</p>
+<p>Loved to participate! Won Some Lost Many</p>
 {{< /timelineItem >}}
 
 
