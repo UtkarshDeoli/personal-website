@@ -31,7 +31,7 @@ Data Structures
 5. Graph
 ### 3. [[04 Algorithms]]
 # Problems
-## Stacks
+
 - [[Next or Previous Greatest or Smallest]]
 - [729. My Calendar I](https://leetcode.com/problems/my-calendar-i/)
 - [731. My Calendar II](https://leetcode.com/problems/my-calendar-ii/)
