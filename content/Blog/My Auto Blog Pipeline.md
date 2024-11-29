@@ -9,4 +9,4 @@ draft: false
 
 DSA is defined as a combination of two separate yet interrelated topics – Data Structure and Algorithms. DSA is one of the most important skills that every computer science student must have. It is often seen that people with good knowledge of these technologies are better programmers than others and thus, crack the interviews of almost every tech giant.
 
-![Image Description](/images/Pasted%20image%2020241129131743.png)
+![Image Description](/images/Pasted%20image%2020241129131743.png)![[Pasted image 20241129132711.png]]
