@@ -18,4 +18,4 @@ DSA is defined as a combination of two separate yet interrelated topics – Data
 
 
 
-![[Pasted image 20241129134948.png]]
+![Image Description](/images/Pasted%20image%2020241129134948.png)
