@@ -9,6 +9,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://utkarshdeoli.in/blog/my-auto-blog-pipeline/</loc>
+    <lastmod>2024-11-29T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://utkarshdeoli.in/blog/internet-of-things/</loc>
     <lastmod>2024-06-12T12:00:00+05:30</lastmod>
     <changefreq>daily</changefreq>
@@ -40,12 +46,6 @@
   </url>
   <url>
     <loc>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</loc>
-    <lastmod>2024-04-13T23:25:36+05:30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://utkarshdeoli.in/blog/my-auto-blog-pipeline/</loc>
     <lastmod>2024-04-13T23:25:36+05:30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>

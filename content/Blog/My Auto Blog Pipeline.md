@@ -1,8 +1,9 @@
-+++
-title = 'My Awesome Blog Pipeline'
-date = 2024-04-13T23:25:36+05:30
-draft = false
-+++
+---
+Date: 2024-11-29
+title: My Awesome Blog Pipeline
+draft: false
+---
+
 
 ## What is DSA?
 
