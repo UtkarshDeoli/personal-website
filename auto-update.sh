@@ -59,6 +59,10 @@ if ! python3 images.py; then
     echo "Failed to process image links."
     exit 1
 fi
+if ! python3 images.py; then
+    echo "Failed to process image links."
+    exit 1
+fi
 
 # Step 4: Build the Hugo site
 echo "Building the Hugo site..."
