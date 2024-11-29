@@ -45,13 +45,14 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://utkarshdeoli.in/projects/</loc>
+    <loc>https://utkarshdeoli.in/blog/010-blogs/my-auto-blog-pipeline/</loc>
     <lastmod>2024-04-13T23:25:36+05:30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://utkarshdeoli.in/blog/010-blogs/my-auto-blog-pipeline/</loc>
+    <loc>https://utkarshdeoli.in/projects/</loc>
+    <lastmod>2024-04-13T23:25:36+05:30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
