@@ -33,6 +33,19 @@ else
     fi
 fi
 
+# Step 3: Process Markdown files with Python script to handle image links
+echo "Processing image links in Markdown files..."
+if [ ! -f "images.py" ]; then
+    echo "Python script images.py not found."
+    exit 1
+fi
+
+if ! python3 images.py; then
+    echo "Failed to process image links."
+    exit 1
+fi
+
+
 # Step 2: Sync posts from Obsidian to Hugo content folder using rsync
 echo "Syncing posts from Obsidian..."
 
@@ -55,10 +68,6 @@ if [ ! -f "images.py" ]; then
     exit 1
 fi
 
-if ! python3 images.py; then
-    echo "Failed to process image links."
-    exit 1
-fi
 if ! python3 images.py; then
     echo "Failed to process image links."
     exit 1
