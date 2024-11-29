@@ -14,6 +14,8 @@ IoT refers to the network of physical objects—“things”—that are embedded
 
 **Example:** Imagine your morning routine. Your alarm clock rings and signals your coffee maker to start brewing coffee. As you step into the kitchen, your smart fridge reminds you that you’re running low on milk. This seamless interaction between devices is a classic example of IoT in action.
 
+
+
 ### Why is IoT Surrounding Us?
 
 IoT devices are becoming ubiquitous due to several reasons:
@@ -22,7 +24,7 @@ IoT devices are becoming ubiquitous due to several reasons:
 2. **Convenience and Efficiency:** IoT devices automate mundane tasks, making our lives easier and more efficient.
 3. **Data Insights:** These devices collect vast amounts of data that can be analyzed to gain valuable insights, leading to smarter decision-making.
 
-### How IoT is Making Life Easy
+### How IoT is Making Life Easy :
 
 IoT has permeated various aspects of our lives, providing convenience and efficiency in numerous ways.
 
