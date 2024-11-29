@@ -8,8 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   
-  <title>Respire for auto blogs (Obsidian &#43; Hugo) &middot; Utkarsh Deoli</title>
-  <meta name="title" content="Respire for auto blogs (Obsidian &#43; Hugo) &middot; Utkarsh Deoli" />
+  <title>Recipe for auto blogs (Obsidian &#43; Hugo) &middot; Utkarsh Deoli</title>
+  <meta name="title" content="Recipe for auto blogs (Obsidian &#43; Hugo) &middot; Utkarsh Deoli" />
   
   <meta name="description" content="Hey! Welcome to my website!" />
   
@@ -66,7 +66,7 @@
   
   <meta property="og:url" content="https://utkarshdeoli.in/blog/auto-blogs/">
   <meta property="og:site_name" content="Utkarsh Deoli">
-  <meta property="og:title" content="Respire for auto blogs (Obsidian &#43; Hugo)">
+  <meta property="og:title" content="Recipe for auto blogs (Obsidian &#43; Hugo)">
   <meta property="og:description" content="Hey! Welcome to my website!">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
@@ -76,7 +76,7 @@
 
   
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Respire for auto blogs (Obsidian &#43; Hugo)">
+  <meta name="twitter:title" content="Recipe for auto blogs (Obsidian &#43; Hugo)">
   <meta name="twitter:description" content="Hey! Welcome to my website!">
 
   
@@ -85,8 +85,8 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "articleSection": "My Blogs",
-    "name": "Respire for auto blogs (Obsidian \u002b Hugo)",
-    "headline": "Respire for auto blogs (Obsidian \u002b Hugo)",
+    "name": "Recipe for auto blogs (Obsidian \u002b Hugo)",
+    "headline": "Recipe for auto blogs (Obsidian \u002b Hugo)",
     
     
     "inLanguage": "en",
@@ -104,7 +104,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "618"
+    "wordCount": "579"
   }]
   </script>
 
@@ -618,7 +618,7 @@
   <header id="single_header" class="mt-5 max-w-prose">
     
     <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
-      Respire for auto blogs (Obsidian + Hugo)
+      Recipe for auto blogs (Obsidian + Hugo)
     </h1>
     <div class="mt-1 mb-6 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
       
@@ -671,7 +671,7 @@
 <div class="flex flex-row flex-wrap items-center">
   
   
-  <time datetime="2024-11-29T00:00:00&#43;00:00">29 November 2024</time><span class="px-2 text-primary-500">&middot;</span><span>618 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">3 mins</span><span class="px-2 text-primary-500">&middot;</span><span>
+  <time datetime="2024-11-29T00:00:00&#43;00:00">29 November 2024</time><span class="px-2 text-primary-500">&middot;</span><span>579 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">3 mins</span><span class="px-2 text-primary-500">&middot;</span><span>
   
   
     
@@ -1117,15 +1117,11 @@ This is currently my obsidian vault, People use it as their second brain, and it
 <ul>
 <li>
 <p><strong>On Linux</strong>:</p>
-<p>bash</p>
-<p>Copy code</p>
 <p><code>sudo apt install hugo</code></p>
 <p>Alternatively, use the official Hugo documentation to install the latest version.</p>
 </li>
 <li>
 <p><strong>On macOS</strong>:</p>
-<p>bash</p>
-<p>Copy code</p>
 <p><code>brew install hugo</code></p>
 </li>
 <li>
@@ -1134,8 +1130,6 @@ Download the binary from the <a href="https://github.com/gohugoio/hugo/releases"
 </li>
 </ul>
 <p>Check the version to ensure it&rsquo;s installed:</p>
-<p>bash</p>
-<p>Copy code</p>
 <p><code>hugo version</code></p>
 <hr>
 
@@ -1151,8 +1145,6 @@ Download the binary from the <a href="https://github.com/gohugoio/hugo/releases"
     
 </h4>
 <p>Run the following command to create a new Hugo site:</p>
-<p>bash</p>
-<p>Copy code</p>
 <p><code>hugo new site my-website</code></p>
 <p>This creates a directory structure for your site in <code>my-website</code>.</p>
 <hr>
@@ -1170,18 +1162,10 @@ Download the binary from the <a href="https://github.com/gohugoio/hugo/releases"
 </h4>
 <p>Browse Hugo themes at themes.gohugo.io and choose one.</p>
 <ul>
-<li>
-<p><strong>Add a theme using Git:</strong></p>
-<p>bash</p>
-<p>Copy code</p>
-<p><code>cd my-website git init git submodule add https://github.com/your-chosen-theme-repo themes/your-theme-name</code></p>
-</li>
-<li>
-<p><strong>Set the theme in <code>config.toml</code>:</strong></p>
-<p>toml</p>
-<p>Copy code</p>
-<p><code>theme = &quot;your-theme-name&quot;</code></p>
-</li>
+<li><strong>Add a theme using Git:</strong>
+<code>cd my-website git init git submodule add https://github.com/your-chosen-theme-repo themes/your-theme-name</code></li>
+<li><strong>Set the theme in <code>config.toml</code>:</strong>
+`theme = &ldquo;your-theme-name&rdquo;</li>
 </ul>
 <hr>
 
@@ -1197,18 +1181,10 @@ Download the binary from the <a href="https://github.com/gohugoio/hugo/releases"
     
 </h4>
 <ul>
-<li>
-<p>Create a new post:</p>
-<p>bash</p>
-<p>Copy code</p>
-<p><code>hugo new posts/my-first-post.md</code></p>
-</li>
-<li>
-<p>Edit the file in the <code>content/posts/</code> directory:</p>
-<p>yaml</p>
-<p>Copy code</p>
-<p><code>--- title: &quot;My First Post&quot; date: 2024-11-29 draft: true --- Write your content here.</code></p>
-</li>
+<li>Create a new post:
+<code>hugo new posts/my-first-post.md</code></li>
+<li>Edit the file in the <code>content/posts/</code> directory:
+<code>--- title: &quot;My First Post&quot; date: 2024-11-29 draft: true --- Write your content here.</code></li>
 </ul>
 <hr>
 
@@ -1224,8 +1200,6 @@ Download the binary from the <a href="https://github.com/gohugoio/hugo/releases"
     
 </h4>
 <p>Run the Hugo development server:</p>
-<p>bash</p>
-<p>Copy code</p>
 <p><code>hugo server -D</code></p>
 <p>Visit http://localhost:1313 to preview your site.</p>
 <hr>
@@ -1242,8 +1216,6 @@ Download the binary from the <a href="https://github.com/gohugoio/hugo/releases"
     
 </h4>
 <p>Generate the static files for deployment:</p>
-<p>bash</p>
-<p>Copy code</p>
 <p><code>hugo</code></p>
 <p>The output will be in the <code>public/</code> directory.</p>
 <hr>
@@ -1275,14 +1247,10 @@ Download the binary from the <a href="https://github.com/gohugoio/hugo/releases"
 <ol>
 <li>
 <p>Initialize a Git repository in your Hugo site directory:</p>
-<p>bash</p>
-<p>Copy code</p>
 <p><code>git init</code></p>
 </li>
 <li>
 <p>Add the generated <code>public/</code> folder as a Git subtree or separate branch.</p>
-<p>bash</p>
-<p>Copy code</p>
 <p><code>git add . git commit -m &quot;Initial commit&quot;</code></p>
 </li>
 <li>
@@ -1326,8 +1294,6 @@ Download the binary from the <a href="https://github.com/gohugoio/hugo/releases"
 <ul>
 <li>
 <p>Edit the <code>config.toml</code> file to set site-wide settings:</p>
-<p>toml</p>
-<p>Copy code</p>
 <p><code>baseURL = &quot;https://your-site-url.com/&quot; languageCode = &quot;en-us&quot; title = &quot;My Hugo Site&quot; theme = &quot;your-theme-name&quot;</code></p>
 </li>
 <li>

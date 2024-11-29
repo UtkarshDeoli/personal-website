@@ -1,5 +1,5 @@
 ---
-title: Respire for auto blogs (Obsidian + Hugo)
+title: Recipe for auto blogs (Obsidian + Hugo)
 Date: 2024-11-29
 draft: false
 ---
@@ -20,9 +20,7 @@ oh ya i forgot to tell you what hugo is . So hugo is a basic CMS written in go u
 
 - **On Linux**:
     
-    bash
     
-    Copy code
     
     `sudo apt install hugo`
     
@@ -30,9 +28,7 @@ oh ya i forgot to tell you what hugo is . So hugo is a basic CMS written in go u
     
 - **On macOS**:
     
-    bash
     
-    Copy code
     
     `brew install hugo`
     
@@ -42,21 +38,15 @@ oh ya i forgot to tell you what hugo is . So hugo is a basic CMS written in go u
 
 Check the version to ensure it's installed:
 
-bash
-
-Copy code
 
 `hugo version`
 
 ---
-
 #### **2. Create a New Hugo Site**
 
 Run the following command to create a new Hugo site:
 
-bash
 
-Copy code
 
 `hugo new site my-website`
 
@@ -69,52 +59,24 @@ This creates a directory structure for your site in `my-website`.
 Browse Hugo themes at themes.gohugo.io and choose one.
 
 - **Add a theme using Git:**
-    
-    bash
-    
-    Copy code
-    
     `cd my-website git init git submodule add https://github.com/your-chosen-theme-repo themes/your-theme-name`
-    
 - **Set the theme in `config.toml`:**
-    
-    toml
-    
-    Copy code
-    
-    `theme = "your-theme-name"`
-    
+    `theme = "your-theme-name"
 
 ---
 
 #### **4. Add Content**
 
 - Create a new post:
-    
-    bash
-    
-    Copy code
-    
-    `hugo new posts/my-first-post.md`
-    
+	`hugo new posts/my-first-post.md`
 - Edit the file in the `content/posts/` directory:
-    
-    yaml
-    
-    Copy code
-    
-    `--- title: "My First Post" date: 2024-11-29 draft: true --- Write your content here.`
-    
-
+	`--- title: "My First Post" date: 2024-11-29 draft: true --- Write your content here.`
 ---
 
 #### **5. Preview the Website Locally**
 
 Run the Hugo development server:
 
-bash
-
-Copy code
 
 `hugo server -D`
 
@@ -126,9 +88,6 @@ Visit http://localhost:1313 to preview your site.
 
 Generate the static files for deployment:
 
-bash
-
-Copy code
 
 `hugo`
 
@@ -144,17 +103,12 @@ Choose a hosting service (e.g., GitHub Pages, Netlify, or Vercel).
 
 1. Initialize a Git repository in your Hugo site directory:
     
-    bash
-    
-    Copy code
+ 
     
     `git init`
     
 2. Add the generated `public/` folder as a Git subtree or separate branch.
-    
-    bash
-    
-    Copy code
+
     
     `git add . git commit -m "Initial commit"`
     
@@ -173,9 +127,6 @@ Choose a hosting service (e.g., GitHub Pages, Netlify, or Vercel).
 
 - Edit the `config.toml` file to set site-wide settings:
     
-    toml
-    
-    Copy code
     
     `baseURL = "https://your-site-url.com/" languageCode = "en-us" title = "My Hugo Site" theme = "your-theme-name"`
     
