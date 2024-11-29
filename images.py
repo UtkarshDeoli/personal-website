@@ -34,3 +34,4 @@ for filename in os.listdir(posts_dir):
             file.write(content)
 
 print("Markdown files processed and images copied successfully.")
+
