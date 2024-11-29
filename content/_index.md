@@ -1,7 +1,9 @@
+
+
 👋 Hi there! I'm Utkarsh 
 {{< typeit
     tag=h4
-  speed=70
+  speed=60
   breakLines=false
   loop=true >}}
 💻 Programmer From India 🇮🇳

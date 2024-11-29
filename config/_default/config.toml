@@ -2,3 +2,7 @@
 
 baseURL = "https://utkarshdeoli.in/"
 languageCode = "en"
+
+
+[pagination]
+  pagerSize = 10

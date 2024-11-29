@@ -1,4 +1,3 @@
-
 +++
 title = 'Internet Of Things'
 date = 2024-06-12T12:00:00+05:30
@@ -16,6 +15,7 @@ The Internet of Things, or IoT, might sound like a futuristic concept, but it’
 IoT refers to the network of physical objects—“things”—that are embedded with sensors, software, and other technologies to connect and exchange data with other devices and systems over the internet. These “things” can range from everyday household items to sophisticated industrial tools.
 
 **Example:** Imagine your morning routine. Your alarm clock rings and signals your coffee maker to start brewing coffee. As you step into the kitchen, your smart fridge reminds you that you’re running low on milk. This seamless interaction between devices is a classic example of IoT in action.
+
 
 <img src="./content/1.png">
 
@@ -46,7 +46,7 @@ IoT has permeated various aspects of our lives, providing convenience and effici
 
 IoT is not just about convenience; it also addresses significant challenges across various sectors.
 
-1. **Healthcare:** Remote patient monitoring and telehealth services provide better care for patients, especially in remote areas.
+1. **Healthcare:** Remote patient monitoring and tele health services provide better care for patients, especially in remote areas.
    - **Example:** IoT-enabled devices can monitor chronic conditions like diabetes, sending real-time data to healthcare providers.
 
 2. **Agriculture:** Smart farming technologies optimize irrigation, monitor soil health, and increase crop yields.
@@ -80,4 +80,4 @@ Interested in diving into the world of IoT? Here’s how you can start:
 
 4. **Experiment and Innovate:** Don’t be afraid to experiment and come up with your own IoT solutions to everyday problems.
 
-In conclusion, IoT is not just a technological trend but a transformative force shaping our present and future. By understanding its applications and potential, you can leverage IoT to create smarter, more efficient solutions in your daily life and beyond. So, why wait? Start exploring the world of IoT today!
+In conclusion, IoT is not just a technological trend but a transformative force shaping our present and future. By understanding its applications and potential, you can leverage IoT to create smarter, more efficient solutions in your daily life and beyond. So, why wait? Start exploring the world of IoT today!*

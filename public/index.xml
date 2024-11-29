@@ -14,7 +14,7 @@
       <pubDate>Wed, 12 Jun 2024 12:00:00 +0530</pubDate>
       
       <guid>https://utkarshdeoli.in/blog/internet-of-things/</guid>
-      <description>Understanding the Internet of Things # The Internet of Things, or IoT, might sound like a futuristic concept, but it’s very much a part of our present.</description>
+      <description></description>
       <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://utkarshdeoli.in/blog/internet-of-things/feature.jpg" />
     </item>
     
@@ -24,7 +24,7 @@
       <pubDate>Mon, 15 Apr 2024 07:48:17 +0530</pubDate>
       
       <guid>https://utkarshdeoli.in/blog/install-arch/</guid>
-      <description>How to Install Arch Linux # Step 1: Download the Arch Linux ISO # Go to the Arch Linux website and navigate to the download section.</description>
+      <description></description>
       
     </item>
     
@@ -34,7 +34,7 @@
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
       <guid>https://utkarshdeoli.in/blog/dsa/</guid>
-      <description>What is DSA?</description>
+      <description></description>
       <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://utkarshdeoli.in/blog/dsa/feature.jpg" />
     </item>
     
@@ -44,7 +44,17 @@
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
       <guid>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</guid>
-      <description>Introduction # This document is about Forest Fire Detection &amp;amp; Prevention.</description>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://utkarshdeoli.in/blog/010-blogs/my-auto-blog-pipeline/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://utkarshdeoli.in/blog/010-blogs/my-auto-blog-pipeline/</guid>
+      <description></description>
       
     </item>
     

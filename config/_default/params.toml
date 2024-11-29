@@ -11,7 +11,7 @@ highlightCurrentMenuArea = "enable"
 mainSections = [ "blog", "projects" ]
 
 [header]
-layout = "fixed-fill-blur"
+layout = "fixed"
 
 [footer]
 showMenu = true
@@ -21,7 +21,7 @@ showAppearanceSwitcher = true
 showScrollToTop = true
 
 [homepage]
-layout = "background"
+layout = "background" # valid options: page, profile, hero, card, background, custom
 showRecent = true
 showRecentItems = 5
 showMoreLink = true
@@ -30,6 +30,14 @@ cardView = true
 cardViewScreenWidth = false
 layoutBackgroundBlur = true
 homepageImage = "back.gif"
+
+[author]
+name = "Utkarsh Deoli"
+image = "profile.jpg"
+headline = "Your Friendly Neighborhood Developer"
+bio = "Just a developer for fun"
+links = [ { envelope = "mailto:utkarsh.deoli@gmail.com?subject=Contacting%20from%20your%20website" }, { github = "https://github.com/UtkarshDeoli" }, { linkedin = "https://www.linkedin.com/in/utkarshdeoli" }, { x-twitter = "https://x.com/utkarshdeoli" }, { youtube = "https://www.youtube.com/@utkarshdeoli" } ,{ code = "https://www.leetcode.com/sagemodeutkarsh"}]
+
 
 [article]
 showDate = true
@@ -112,3 +120,4 @@ measurementId = "G-YP0F0GC2D5"
 [buymeacoffee]
 
 [verification]
+
