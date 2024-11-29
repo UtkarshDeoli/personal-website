@@ -91,23 +91,12 @@ if ! git push origin master; then
     exit 1
 fi
 
-# Step 8: Push the public folder to the hostinger branch using subtree split and force push
-echo "Deploying to GitHub Hostinger..."
-if git branch --list | grep -q 'hostinger-deploy'; then
-    git branch -D hostinger-deploy
-fi
 
-if ! git subtree split --prefix public -b hostinger-deploy; then
-    echo "Subtree split failed."
+# Step 8: Deploy to firebase
+echo "Deploying to firebase"
+if ! firebase deploy; then
+    echo "Firebase deploy failed."
     exit 1
 fi
-
-if ! git push origin hostinger-deploy:hostinger --force; then
-    echo "Failed to push to hostinger branch."
-    git branch -D hostinger-deploy
-    exit 1
-fi
-
-git branch -D hostinger-deploy
 
 echo "All done! Site synced, processed, committed, built, and deployed."
