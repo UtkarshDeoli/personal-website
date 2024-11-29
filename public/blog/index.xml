@@ -2,38 +2,38 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blog on Utkarsh Deoli</title>
-    <link>http://localhost:1313/blog/</link>
+    <link>https://utkarshdeoli.in/blog/</link>
     <description>Recent content in Blog on Utkarsh Deoli</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© 2024 Utkarsh Deoli</copyright>
-    <lastBuildDate>Sat, 13 Apr 2024 23:25:36 +0530</lastBuildDate><atom:link href="http://localhost:1313/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Apr 2024 23:25:36 +0530</lastBuildDate><atom:link href="https://utkarshdeoli.in/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Install Arch Guide</title>
-      <link>http://localhost:1313/blog/install-arch/</link>
+      <link>https://utkarshdeoli.in/blog/install-arch/</link>
       <pubDate>Mon, 15 Apr 2024 07:48:17 +0530</pubDate>
       
-      <guid>http://localhost:1313/blog/install-arch/</guid>
+      <guid>https://utkarshdeoli.in/blog/install-arch/</guid>
       <description></description>
       
     </item>
     
     <item>
       <title>Data Structures And Algo</title>
-      <link>http://localhost:1313/blog/dsa/</link>
+      <link>https://utkarshdeoli.in/blog/dsa/</link>
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
-      <guid>http://localhost:1313/blog/dsa/</guid>
+      <guid>https://utkarshdeoli.in/blog/dsa/</guid>
       <description></description>
-      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/blog/dsa/feature.jpg" />
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://utkarshdeoli.in/blog/dsa/feature.jpg" />
     </item>
     
     <item>
       <title>My Awesome Blog Pipeline</title>
-      <link>http://localhost:1313/blog/my-auto-blog-pipeline/</link>
+      <link>https://utkarshdeoli.in/blog/my-auto-blog-pipeline/</link>
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
-      <guid>http://localhost:1313/blog/my-auto-blog-pipeline/</guid>
+      <guid>https://utkarshdeoli.in/blog/my-auto-blog-pipeline/</guid>
       <description></description>
       
     </item>

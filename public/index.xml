@@ -2,58 +2,48 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Utkarsh Deoli</title>
-    <link>http://localhost:1313/</link>
+    <link>https://utkarshdeoli.in/</link>
     <description>Recent content on Utkarsh Deoli</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© 2024 Utkarsh Deoli</copyright>
-    <lastBuildDate>Wed, 12 Jun 2024 12:00:00 +0530</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 06 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://utkarshdeoli.in/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Install Arch Guide</title>
-      <link>http://localhost:1313/blog/install-arch/</link>
+      <link>https://utkarshdeoli.in/blog/install-arch/</link>
       <pubDate>Mon, 15 Apr 2024 07:48:17 +0530</pubDate>
       
-      <guid>http://localhost:1313/blog/install-arch/</guid>
+      <guid>https://utkarshdeoli.in/blog/install-arch/</guid>
       <description></description>
       
     </item>
     
     <item>
       <title>Data Structures And Algo</title>
-      <link>http://localhost:1313/blog/dsa/</link>
+      <link>https://utkarshdeoli.in/blog/dsa/</link>
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
-      <guid>http://localhost:1313/blog/dsa/</guid>
+      <guid>https://utkarshdeoli.in/blog/dsa/</guid>
       <description></description>
-      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/blog/dsa/feature.jpg" />
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://utkarshdeoli.in/blog/dsa/feature.jpg" />
     </item>
     
     <item>
       <title>Forest Fire Detection &amp; Prevention</title>
-      <link>http://localhost:1313/projects/forestfiredetection/forestfire/</link>
+      <link>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</link>
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
-      <guid>http://localhost:1313/projects/forestfiredetection/forestfire/</guid>
+      <guid>https://utkarshdeoli.in/projects/forestfiredetection/forestfire/</guid>
       <description></description>
       
     </item>
     
     <item>
       <title>My Awesome Blog Pipeline</title>
-      <link>http://localhost:1313/blog/my-auto-blog-pipeline/</link>
+      <link>https://utkarshdeoli.in/blog/my-auto-blog-pipeline/</link>
       <pubDate>Sat, 13 Apr 2024 23:25:36 +0530</pubDate>
       
-      <guid>http://localhost:1313/blog/my-auto-blog-pipeline/</guid>
-      <description></description>
-      
-    </item>
-    
-    <item>
-      <title></title>
-      <link>http://localhost:1313/blog/dsa/content/_problemsheet/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://localhost:1313/blog/dsa/content/_problemsheet/</guid>
+      <guid>https://utkarshdeoli.in/blog/my-auto-blog-pipeline/</guid>
       <description></description>
       
     </item>
