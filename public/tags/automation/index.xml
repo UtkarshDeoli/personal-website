@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Automation on Utkarsh Deoli</title>
+    <link>https://utkarshdeoli.in/tags/automation/</link>
+    <description>Recent content in Automation on Utkarsh Deoli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2025 Utkarsh Deoli</copyright>
+    <lastBuildDate>Fri, 29 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://utkarshdeoli.in/tags/automation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Recipe for auto blogs (Obsidian &#43; Hugo)</title>
+      <link>https://utkarshdeoli.in/blog/auto-blogs/</link>
+      <pubDate>Fri, 29 Nov 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://utkarshdeoli.in/blog/auto-blogs/</guid>
+      <description></description>
+      
+    </item>
+    
+  </channel>
+</rss>

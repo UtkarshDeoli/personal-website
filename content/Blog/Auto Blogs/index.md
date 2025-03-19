@@ -2,6 +2,11 @@
 title: Recipe for auto blogs (Obsidian + Hugo)
 Date: 2024-11-29
 draft: false
+tags:
+  - automation
+  - python
+  - obsidian
+  - hugo
 ---
 ## What is Obsidian ?
 
@@ -19,16 +24,9 @@ oh ya i forgot to tell you what hugo is . So hugo is a basic CMS written in go u
 #### **1. Install Hugo**
 
 - **On Linux**:
-    
-    
-    
     `sudo apt install hugo`
-    
     Alternatively, use the official Hugo documentation to install the latest version.
-    
 - **On macOS**:
-    
-    
     
     `brew install hugo`
     

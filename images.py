@@ -3,8 +3,8 @@ import re
 import shutil
 
 # Paths
-posts_dir = "/home/utkarsh/Documents/Notes/UtkarshDeoli/010 Blogs"
-attachments_dir = "/home/utkarsh/Documents/Notes/UtkarshDeoli/images"
+posts_dir = "/home/utkarsh/Documents/UtkarshDeoli/010 Blogs"
+attachments_dir = "/home/utkarsh/Documents/UtkarshDeoli/images"
 static_images_dir = "/home/utkarsh/Documents/Projects/personal-website/static/images"
 
 # Ensure the static images directory exists
