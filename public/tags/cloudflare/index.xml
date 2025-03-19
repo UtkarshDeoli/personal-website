@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cloudflare on Utkarsh Deoli</title>
+    <link>https://utkarshdeoli.in/tags/cloudflare/</link>
+    <description>Recent content in Cloudflare on Utkarsh Deoli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2025 Utkarsh Deoli</copyright>
+    <lastBuildDate>Mon, 20 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://utkarshdeoli.in/tags/cloudflare/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deploy Smarter, Not Harder: Cloudflare Tunnels for the Win</title>
+      <link>https://utkarshdeoli.in/blog/cloud-flare/</link>
+      <pubDate>Mon, 20 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://utkarshdeoli.in/blog/cloud-flare/</guid>
+      <description></description>
+      
+    </item>
+    
+  </channel>
+</rss>
