@@ -10,6 +10,8 @@ static_images_dir = "/home/utkarsh/Documents/Projects/personal-website/static/im
 # Ensure the static images directory exists
 os.makedirs(static_images_dir, exist_ok=True)
 
+print('Start')
+
 # Step 1: Process each markdown file in the posts directory
 for filename in os.listdir(posts_dir):
     if filename.endswith(".md"):
@@ -18,10 +20,10 @@ for filename in os.listdir(posts_dir):
         # Read the content of the Markdown file
         with open(filepath, "r") as file:
             content = file.read()
-        
+            print('Iterate')
         # Step 2: Find all image links in the format `![[Pasted image ...]]`
         images = re.findall(r'!\[\[([^]]*\.png)\]\]', content)
-        
+        print(images)
         # Step 3: Replace image links with the correct format
         for image in images:
             # Create the Markdown-compatible image link
