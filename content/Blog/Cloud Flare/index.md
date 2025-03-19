@@ -34,6 +34,8 @@ Enter **Cloudflare Tunnels** – a secure way to expose local applications to th
 Cloudflare Tunnels use a lightweight service called **Cloudflared** to create a secure, reverse tunnel between your local machine and Cloudflare’s global network. This allows you to expose applications on your local network to the public internet via a Cloudflare-managed domain, eliminating the need for port forwarding or a static IP.
 
 ![Image Description](/images/0_X5p_GBelf4dnPcir.webp)
+
+![[Pasted image 20250319193139.png]]
 ### **Key Benefits:**
 
 - No need for a public IP.
