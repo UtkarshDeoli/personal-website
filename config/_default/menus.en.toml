@@ -9,15 +9,16 @@ weight = 1
 
 [[main]]
 name = "Projects"
-pageRef = "projects"
+pageRef = ""
+url = "https://whois.utkarshdeoli.in"
 identifier = "hqayNdRnS6"
-weight = 2
+weight = 3
 
 [[main]]
 name = "Blog"
 pageRef = "Blog"
 identifier = "BL4vAxAMDP"
-weight = 3
+weight = 2
 
 [[main]]
 name = "Contact"
@@ -28,7 +29,7 @@ weight = 4
 [[main]]
 name = "Resume"
 pageRef = "Resume"
-url = "https://firebasestorage.googleapis.com/v0/b/utkarshdeolidev.appspot.com/o/UtkarshDeoli.pdf?alt=media"
+url = "https://drive.google.com/file/d/1kKEtwNV-2PyuKQ4UnZEfO-AnTdn6Z4-s/view?usp=sharing"
 identifier = "r4AK879oeK"
 weight = 5
 
